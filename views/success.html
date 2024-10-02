@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+        .visible {
+            display: block;
+        }
+        #result-table, #consulta-vehiculo {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #result-table th, #result-table td,
+        #consulta-vehiculo th, #consulta-vehiculo td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #result-table th, #consulta-vehiculo th {
+            background-color: #f2f2f2;
+        }
+
+
+
+        #tabla_modelo, #consulta-vehiculo, #tabla_stock {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        #tabla_modelo th, #tabla_modelo td,
+        #consulta-vehiculo th, #consulta-vehiculo td,
+        #tabla_stock th, #tabla_stock td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #tabla_modelo th, #consulta-vehiculo th, #tabla_stock th {
+            background-color: #f2f2f2;
+        }
+
+        
+
+        
+        
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>FRENOS DOVER</h1>
+        <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
+        <nav class="nav" id="nav">
+            <button class="cerrar-menu" id="cerrar"><i class="bi bi-x"></i></button>
+            <ul class="nav-list">
+                <li><a href="#" id="consulta-pastilla">Consulta de pastilla</a></li>
+                <li><a href="#" id="consulta-vehiculo">Consulta Por Vehiculo</a></li>
+                <li><a href="#" id="consulta-stock">Consulta Inventario</a></li>
+                <li><a href="#">Qué hacemos</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div id="consulta-container" class="hidden">
+        <label for="codigo-pastilla">Ingrese el código de la pastilla:</label>
+        <input type="text" id="codigo-pastilla" name="codigo-pastilla">
+        <button id="buscar">Buscar</button>
+        <table id="result-table" class="hidden">
+            <thead>
+                <tr>
+                    <th>ID Pastilla</th>
+                    <th>Lado</th>
+                    <th>Dimensión</th>
+                </tr>
+            </thead>
+            <tbody id="result-body">
+                <!-- Resultados se llenarán aquí -->
+            </tbody>
+        </table>
+    </div>
+
+
+    
+
+    <div id="vehiculo-container" class="hidden">
+        <h2>Resultados de Consulta Por Vehiculo asdasdasd</h2>
+
+        <label for="codigo-serie-modelo">Ingrese el modelo:</label>
+        <input type="text" id="codigo-modelo" name="codigo-modelo">
+        <button id="boton_buscar-modelo">Buscar</button>
+
+
+        <table id="tabla_modelo"  class="hidden">
+            <thead>
+                <tr>
+                    <th>ID Detalle</th>
+                    <th>ID Pastilla</th>
+                    <th>Marca</th>
+                    <th>Detalle Serie Modelo</th>
+                </tr>
+            </thead>
+            <tbody id="vehiculo-body">
+                <!-- rellenaremos aqui con la data retornada -->
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    <div id="stock_container" class="hidden">
+        <h2>I N V E N T A R I O - F R E N O S - D O V E R</h2>
+
+        <label for="stok-label">Ingrese el modelo:</label>
+        <input type="text" id="stock-input" name="stock-input">
+        <button id="boton_buscar-stock">Buscar</button>
+
+
+        <table id="tabla_stock"  class="hidden">
+            <thead>
+                <tr>
+                    <th>Codigo Pastilla</th>
+                    <th>Cantidad</th>
+                    <th>Costo</th>
+                    <th>Venta</th>
+                    <th>Codigo General</th>
+                </tr>
+            </thead>
+            <tbody id="stock-body">
+                <!-- rellenaremos aqui con la data retornada -->
+            </tbody>
+        </table>
+    </div>
+    
+    
+
+
+    
+
+    <script src="js/main.js"></script>
+</body>
+</html>
