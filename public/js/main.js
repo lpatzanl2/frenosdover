@@ -47,16 +47,14 @@ vehiculoLink.addEventListener('click', async (e) => {
 
 
 
-//Obtenemos el boton para modelo
-const botonbuscarmodelo = document.getElementById('boton_buscar-modelo');
 
-//Evento click al boton
-botonbuscarmodelo.addEventListener('click', async () => {
-    await buscarPastilla2();
-});
+
+
+
 
 //obtenemos lo que tiene el input para modelo
 const inputcodigomodelo = document.getElementById('codigo-modelo');
+const inputcodigopastillita = document.getElementById('codigo-pastillita');
 
 //obtenemos la tabla su body
 const resultBodyVehiculo = document.getElementById('vehiculo-body');
@@ -64,7 +62,22 @@ const resultBodyVehiculo = document.getElementById('vehiculo-body');
 //obtenemos toda la tabla
 const resultTableVehiculo = document.getElementById('tabla_modelo');
 
+
+// Función para limpiar los otros inputs cuando uno recibe caracteres
+function limpiarOtrosInputs(inputActual) {
+    if (inputActual !== inputcodigopastillita) inputcodigopastillita.value = '';
+    if (inputActual !== inputcodigomodelo) inputcodigomodelo.value = '';
+    //if (inputActual !== inputPastilla) inputPastilla.value = '';
+}
+
+
+
+//El input empieza a escuchar pra MODELO
 inputcodigomodelo.addEventListener('input', async () => {
+    //limpiamos los otros inputs
+    limpiarOtrosInputs(inputcodigomodelo);
+
+
     const codigoPastilla = inputcodigomodelo.value.trim();
 
     if (codigoPastilla.length >= 2) {
@@ -75,7 +88,9 @@ inputcodigomodelo.addEventListener('input', async () => {
     }
 });
 
-// Función para buscar pastilla
+
+
+//--------------- BUSCAR POR MODELO -----------------
 async function buscarPastilla2() {
     const codigoPastilla = inputcodigomodelo.value.trim();
 
@@ -115,6 +130,68 @@ async function buscarPastilla2() {
         alert('Hubo un problema al realizar la búsqueda. Verifique la consola para más detalles.');
     }
 }
+
+
+//--------------- BUSCAR POR PASTILLA -----------------
+
+//El input empieza a escuchar pra MARCA
+inputcodigopastillita.addEventListener('input', async () => {
+    //limpiamos los otros inputs
+    limpiarOtrosInputs(inputcodigopastillita);
+
+
+    const codigoPastilla = inputcodigopastillita.value.trim();
+
+    if (codigoPastilla.length >= 2) {
+        await buscarPastillaPastillita();
+    } else {
+        resultBodyVehiculo.innerHTML = '';
+        resultTableVehiculo.classList.add('hidden');
+    }
+});
+
+
+async function buscarPastillaPastillita() {
+    const codigoPastilla = inputcodigopastillita.value.trim();
+
+    if (codigoPastilla === '') {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/buscar-pastilla-pastillita?codigo=${codigoPastilla}`);
+
+        if (!response.ok) {
+            throw new Error('Error en la respuesta de la red.');
+        }
+
+        const data = await response.json();
+        resultBodyVehiculo.innerHTML = '';
+
+        if (data.length === 0) {
+            resultBodyVehiculo.innerHTML = '<tr><td colspan="4">No se encontraron resultados.</td></tr>';
+        } else {
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id_detalle}</td>
+                    <td>${row.id_pastilla}</td>
+                    <td>${row.nombre_marca || 'No disponible'}</td> <!-- Cambiado aquí para mostrar el nombre de la marca -->
+                    <td>${row.detalle_serie_modelo}</td>
+                `;
+                resultBodyVehiculo.appendChild(tr);
+            });
+            
+        }
+
+        resultTableVehiculo.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error al buscar pastilla', error);
+        alert('Hubo un problema al realizar la búsqueda. Verifique la consola para más detalles.');
+    }
+}
+
+
 
 
 
@@ -274,6 +351,30 @@ async function buscarPastilla3() {
 }
     
     
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+document.getElementById('exportar-stock').addEventListener('click', async () => {
+    try {
+        const response = await fetch('/exportar-stock');
+
+        if (!response.ok) {
+            throw new Error('Error al descargar el archivo Excel');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Inventario Frenos Dover.xlsx';  // Nombre del archivo
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } catch (error) {
+        console.error('Error al exportar el archivo', error);
+        alert('Hubo un problema al exportar el archivo.');
+    }
+});
+
 
 });
 

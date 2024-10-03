@@ -90,14 +90,17 @@
 
     
 
-    <div id="vehiculo-container" class="hidden">
-        <h2>Resultados de Consulta Por Vehiculo asdasdasd</h2>
+    <div id="vehiculo-container" class="hidden" >
+        <h2>Resultados de Consulta Por Vehiculo</h2>
+        <br />
 
-        <label for="codigo-serie-modelo">Ingrese el modelo:</label>
-        <input type="text" id="codigo-modelo" name="codigo-modelo">
-        <button id="boton_buscar-modelo">Buscar</button>
-
-
+        <div class="form-container">
+            <label for="codigo-serie-modelo">Modelo:</label>
+            <input type="text" id="codigo-modelo" name="codigo-modelo">
+            
+            <label for="codigo-serie-marca">Modelo Pastilla:</label>
+            <input type="text" id="codigo-pastillita" name="codigo-pastillita">
+        </div>
         <table id="tabla_modelo"  class="hidden">
             <thead>
                 <tr>
@@ -120,6 +123,7 @@
 
     <div id="stock_container" class="hidden">
         <h2>I N V E N T A R I O - F R E N O S - D O V E R</h2>
+        <button id="exportar-stock">Exportar Stock a Excel</button>
 
         <label for="stok-label">Ingrese el modelo:</label>
         <input type="text" id="stock-input" name="stock-input">

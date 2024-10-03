@@ -95,7 +95,7 @@ app.get('/buscar-pastilla', async (req, res) => {
 
 
 //********************************************************************************* */
-// Ruta para buscar pastilla
+// CONSULTA POR VEHICULO en el DIV // INPUT = MODELO
 app.get('/buscar-pastilla-modelo', async (req, res) => {
     const { codigo } = req.query;
 
@@ -128,17 +128,44 @@ app.get('/buscar-pastilla-modelo', async (req, res) => {
 });
 
 
+// CONSULTA POR VEHICULO en el DIV // INPUT = PASTILLA
+
+app.get('/buscar-pastilla-pastillita', async (req, res) => {
+    const { codigo } = req.query;
+
+    if (!codigo) {
+        return res.status(400).json({ message: 'El parámetro de búsqueda es obligatorio.' });
+    }
+
+    try {
+        // Usar LIKE para buscar patrones que contengan el código ingresado
+        const query = `
+            SELECT 
+                pd.ID_Detalle, 
+                pd.ID_Pastilla, 
+                m.nombre_marca, 
+                pd.Detalle_Serie_Modelo 
+            FROM 
+                pastilla_detalle_serie_modelo pd
+            JOIN 
+                marca m ON pd.ID_Marca = m.ID_Marca
+            WHERE 
+                pd.ID_Pastilla ILIKE $1
+        `;
+        const result = await client.query(query, [`%${codigo}%`]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error en la consulta', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
 
 
 
 //**-*-------------------------------------------------------------*------------------------------------------------
 
 //STock
-
-
-
-
-
 app.get('/buscar-stock', async (req, res) => {
     const { codigo } = req.query;
 
@@ -160,6 +187,69 @@ app.get('/buscar-stock', async (req, res) => {
         res.status(500).json({ message: 'Error en el servidor' });
     }
 });
+
+//Exportar STOCK a excel haciendo un SELCT * FROM STOCK--------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+const ExcelJS = require('exceljs');
+
+app.get('/exportar-stock', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM stock';
+        const result = await client.query(query);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No hay datos disponibles.' });
+        }
+
+        // Crear un nuevo libro de Excel
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('FrenosDoverStock');
+
+        // Agregar las columnas
+        worksheet.columns = [
+            { header: 'ID Pastilla', key: 'id_pastilla_venta', width: 15, alignment: { horizontal: 'center' }  },
+            { header: 'Cantidad', key: 'stock', width: 8, alignment: { horizontal: 'center' }  },
+            { header: 'Precio Costo', key: 'precio_costo', width: 15, alignment: { horizontal: 'center' }  },
+            { header: 'Precio Venta', key: 'precio_venta', width: 15, alignment: { horizontal: 'center' }  },
+            { header: 'ID Pastilla General', key: 'id_pastilla', width: 30, alignment: { horizontal: 'center' }  },
+        ];
+
+        // Centrar los encabezados
+        worksheet.columns.forEach(column => {
+        column.headerStyle = { alignment: { vertical: 'middle', horizontal: 'center' } };
+        });
+
+        // Agregar las filas con los datos de la consulta
+        result.rows.forEach(row => {
+            worksheet.addRow({
+                id_pastilla_venta: row.id_pastilla_venta,
+                stock: row.stock,
+                precio_costo: row.precio_costo,
+                precio_venta: row.precio_venta,
+                id_pastilla: row.id_pastilla
+            });
+        });
+
+        worksheet.eachRow((row, rowNumber) => {
+            row.eachCell((cell) => {
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            });
+        });
+
+        // Generar el archivo Excel y enviarlo como respuesta
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=stock.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error('Error al generar el archivo Excel', error);
+        res.status(500).json({ message: 'Error al generar el archivo Excel.' });
+    }
+});
+
 
 
 
