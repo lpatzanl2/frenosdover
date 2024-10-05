@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultBody = document.getElementById('result-body');
     const inputCodigo = document.getElementById('codigo-pastilla');
     const stockLink = document.getElementById('consulta-stock');
+    
+    const navGestionInvetario = document.getElementById('gestion-inventario');
+    const crudContainer = document.getElementById('crud_container');
 
 
     
@@ -42,6 +45,7 @@ vehiculoLink.addEventListener('click', async (e) => {
     consultaContainer.classList.add('hidden');
     vehiculoContainer.classList.remove('hidden');
     stockContainer.classList.add('hidden');
+    crudContainer.classList.add('hidden');
     nav.classList.remove('visible');
 });
 
@@ -203,6 +207,7 @@ async function buscarPastillaPastillita() {
         consultaContainer.classList.remove('hidden');
         vehiculoContainer.classList.add('hidden');
         stockContainer.classList.add('hidden');
+        crudContainer.classList.add('hidden');
         nav.classList.remove('visible');
     });
     
@@ -276,8 +281,11 @@ async function buscarPastillaPastillita() {
         consultaContainer.classList.add('hidden');
         vehiculoContainer.classList.add('hidden');
         stockContainer.classList.remove('hidden');
+        crudContainer.classList.add('hidden');
         nav.classList.remove('visible');
     });
+
+
 
     //Obtenemos el boton para modelo
 const botonbuscarstock = document.getElementById('boton_buscar-stock');
@@ -373,6 +381,18 @@ document.getElementById('exportar-stock').addEventListener('click', async () => 
         console.error('Error al exportar el archivo', error);
         alert('Hubo un problema al exportar el archivo.');
     }
+});
+
+//---------------------------------------------------------------
+
+
+navGestionInvetario.addEventListener('click', async (b) => {
+    b.preventDefault();
+    consultaContainer.classList.add('hidden');
+    vehiculoContainer.classList.add('hidden');
+    stockContainer.classList.add('hidden');
+    crudContainer.classList.remove('hidden');
+    nav.classList.remove('visible');
 });
 
 

@@ -211,3 +211,14 @@ img {
     font-size: 2rem;
   }
 }
+
+
+/* Centrar el texto de los encabezados de las tablas */
+table th {
+  text-align: center; /* Centrar el texto horizontalmente */
+}
+
+
+
+
+
