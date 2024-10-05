@@ -76,6 +76,72 @@ header {
     color: #ecececec;
 }
 
+nav {
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Cambiado a flex-end para alinear a la derecha */
+    gap: 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1c1c1c;
+    padding: 2rem;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
+    z-index: 1000; /* Asegúrate de que este número sea mayor */
+    white-space: nowrap; /* Previene el salto de línea */
+}
+
+.nav.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.nav-list {
+    display: flex; /* Asegúrate de que la lista también esté en flex */
+    flex-direction: column;
+    align-items: flex-end; /* Alinea los elementos a la derecha */
+    gap: 2rem; /* Añade espacio entre los elementos */
+
+}
+
+.nav-list li {
+
+}
+
+.nav-list li a {
+    color: #ecececec;
+    font-weight: bold; /* Aplica negrita al texto */
+    padding: 0.5rem; /* Añade padding para espacio alrededor del texto */
+}
+
+.nav-list li a:hover {
+    color: #ffcc00; /* Color del texto en hover */
+    background-color: #333; /* Color de fondo en hover, ajusta según tu preferencia */
+    transition: color 0.3s, background-color 0.3s; /* Transición suave */
+    border-radius: 4px; /* Redondea las esquinas del fondo */
+}
+
+
+.input-container {
+    margin: 2px; /* Opcional: elimina el margen si lo hay */
+    display: flex; /* Activar flexbox */
+    align-items: center; /* Alinear elementos verticalmente al centro */
+    gap: 3rem; /* Espacio entre el label y el input */
+}
+
+label {
+    margin: 2px; /* Opcional: elimina el margen si lo hay */
+    font-size: 20px;
+}
+
+.input {
+    padding: 0.5rem; /* Espaciado interno en el input */
+}
+
+
 
 /* ================================================================= */
 
@@ -88,8 +154,8 @@ body {
 }
 
 table.table {
-    width: auto; /* Permitir que la tabla se ajuste al contenido */
-    table-layout: auto; /* Permitir que el navegador determine el ancho de las columnas */
+    width: 100%; /* Permitir que la tabla se ajuste al contenido */
+    table-layout: fixed; /* Permitir que el navegador determine el ancho de las columnas */
     
 }
 
@@ -99,7 +165,7 @@ table.table tr td {
     overflow: hidden; /* Evitar que el contenido sobresalga */
     text-overflow: ellipsis; /* Agregar "..." si el texto es demasiado largo */
     text-align: center; /* Centrar el texto en los encabezados */
-    
+    padding: 15px 20px; /* Aumentar el padding para mejorar la legibilidad */
 }
 
 
@@ -155,7 +221,7 @@ table.table tr th:first-child {
     width: 60px;
 }
 table.table tr th:last-child {
-    width: 100px;
+    width: 150px;
 }
 table.table-striped tbody tr:nth-of-type(odd) {
     background-color: #fcfcfc;
@@ -316,4 +382,75 @@ table.table .avatar {
 }	
 .modal form label {
     font-weight: normal;
+}
+
+/* Botones */
+
+.custom-btn {
+    width: 250px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 25px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+     7px 7px 20px 0px rgba(0,0,0,.1),
+     4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+  }
+
+  .btn-11 {
+    border: none;
+    background: #278e8a;
+      background: linear-gradient(0deg, rgba(13, 159, 152) 0%, rgba(13, 159, 152) 100%);
+      color: #fff;
+      overflow: hidden;
+  }
+  .btn-11:hover {
+      text-decoration: none;
+      color: #9dcac8 ;
+  }
+  .btn-11:before {
+      position: absolute;
+      content: '';
+      display: inline-block;
+      top: -180px;
+      left: 0;
+      width: 30px;
+      height: 100%;
+      background-color: #92e2de;
+      animation: shiny-btn1 3s ease-in-out infinite;
+  }
+  .btn-11:hover{
+    opacity: .7;
+  }
+  .btn-11:active{
+    box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
+                -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+      inset -4px -4px 6px 0 rgba(255,255,255,.2),
+      inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+  
+  
+  @-webkit-keyframes shiny-btn1 {
+      0% { -webkit-transform: scale(0) rotate(45deg); opacity: 0; }
+      80% { -webkit-transform: scale(0) rotate(45deg); opacity: 0.5; }
+      81% { -webkit-transform: scale(4) rotate(45deg); opacity: 1; }
+      100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
+  }
+  
+  #crud-input {
+    color: black; /* Cambia el color de la fuente */
+    background-color: #f0f0f0; /* Cambia el color de fondo del input */
+    border: 1px solid #ccc; /* Define el borde */
+    padding: 10px; /* Define el espaciado interno */
+    font-size: 16px; /* Ajusta el tamaño de la fuente */
+    border-radius: 5px; /* Haz los bordes redondeados */
+    width: 100%; /* Ancho completo del contenedor */
 }

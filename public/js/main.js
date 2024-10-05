@@ -383,9 +383,13 @@ document.getElementById('exportar-stock').addEventListener('click', async () => 
     }
 });
 
-//---------------------------------------------------------------
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------CRUD-----------------------------------------------------------------------------------------------------------
 
 
+//mostramos su div y ocultamos los elementos del nav
 navGestionInvetario.addEventListener('click', async (b) => {
     b.preventDefault();
     consultaContainer.classList.add('hidden');
@@ -394,6 +398,84 @@ navGestionInvetario.addEventListener('click', async (b) => {
     crudContainer.classList.remove('hidden');
     nav.classList.remove('visible');
 });
+
+//obtenemos lo que tiene el input en el area de gestion de inventario
+const inputCrud = document.getElementById('crud-input');
+//obtenemos toda la tabla
+const tablaCrud = document.getElementById('tabla-crud');
+//obtenemos la tabla su body
+const bodyTablaCrud = document.getElementById('crud-body');
+
+inputCrud.addEventListener('input', async () => {
+    
+    const codigoPastilla = inputCrud.value.trim();
+
+    if (codigoPastilla.length >= 1) {
+        await buscarPastillaCrud();
+    } else {
+        bodyTablaCrud.innerHTML = '';
+        tablaCrud.classList.add('hidden');
+    }
+});
+
+
+// Función para buscar pastilla
+// Función para buscar pastilla
+async function buscarPastillaCrud() {
+    const codigoPastilla = inputCrud.value.trim();
+
+    if (codigoPastilla === '') {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/buscar-stock2?codigo=${codigoPastilla}`);
+
+        if (!response.ok) {
+            throw new Error('Error en la respuesta de la red.');
+        }
+
+        const data = await response.json();
+        bodyTablaCrud.innerHTML = '';
+
+        if (data.length === 0) {
+            bodyTablaCrud.innerHTML = '<tr><td colspan="6">No se encontraron resultados.</td></tr>';
+        } else {
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>
+            <span class="custom-checkbox">
+								<input type="checkbox" id="checkbox1" name="options[]" value="1">
+								<label for="checkbox1"></label>
+							</span>
+          </td>
+                    <td>${row.id_pastilla_venta}</td>
+                    <td>${row.stock}</td>
+                    <td>${row.precio_costo}</td> 
+                    <td>${row.precio_venta}</td>
+                    <td>${row.id_pastilla}</td>
+                    <td>
+                        <a href="#editProductoModal" class="edit" data-toggle="modal">
+                            <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                        </a>
+                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal">
+                            <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+                        </a>
+                    </td>
+                `;
+                bodyTablaCrud.appendChild(tr);
+            });
+        }
+
+        tablaCrud.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error al buscar pastilla', error);
+        alert('Hubo un problema al realizar la búsqueda. Verifique la consola para más detalles.');
+    }
+}
+
+
 
 
 });

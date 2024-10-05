@@ -172,10 +172,16 @@
 					
                 </div>
             </div>
-        <button id="exportar-stock">Exportar Stock a Excel</button>
 
-        <label for="stok-label">Ingrese el modelo:</label>
-        <input type="text" id="stock-input" name="stock-input" placeholder="Write here..." class="input">
+        <button id="exportar-stock" class="custom-btn btn-11">Exportar Stock a Excel</button>
+        <br/>   
+        <br/>   
+        <br/>   
+        <div class="input-container">
+            <label for="stok-label">Ingrese el modelo:</label>
+            <input type="text" id="stock-input" name="stock-input" placeholder="Write here..." class="input">
+        </div>
+        
         
         <button id="boton_buscar-stock" class="hidden">Buscar</button>
 
@@ -225,7 +231,9 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-6">
-						<h2>Gestión de inventario <b>FRENOS DOVER</b></h2>
+						<h2>Gestión de inventario <b>FRENOS DOVER</b></h2> 
+                        <br/>
+                        <input type="text" id="crud-input" name="crud-input" placeholder="Ingrese su busqueda..." class="input">
 					</div>
 					<div class="col-sm-6">
 						<a href="#addPastillaModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Agregar Nueva Pastilla
@@ -240,7 +248,7 @@
             <!-- -------------------------------------------------------------------------------- -->
 
 
-            <table class="table table-striped table-hover">
+            <table id="tabla-crud" class="table table-striped table-hover">
                 <thead>
                     <tr>
 						<th>
@@ -253,28 +261,12 @@
                         <th>Cantidad</th>
                         <th>Costo</th>
                         <th>Venta</th>
-                        <th>Actions</th>
                         <th>Codigo Global</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-						<td>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
-							</span>
-						</td>
-                        <td></td>
-                        <td></td>
-						<td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <a href="#editProductoModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                        </td>
-                    </tr>
+                <tbody id="crud-body">
+                    
                     
                 </tbody>
             </table>

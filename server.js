@@ -165,8 +165,30 @@ app.get('/buscar-pastilla-pastillita', async (req, res) => {
 
 //**-*-------------------------------------------------------------*------------------------------------------------
 
-//STock
+//STocks
 app.get('/buscar-stock', async (req, res) => {
+    const { codigo } = req.query;
+
+    if (!codigo) {
+        return res.status(400).json({ message: 'El parámetro de búsqueda es obligatorio.' });
+    }
+
+    try {
+        // Usar LIKE para buscar patrones que contengan el código ingresado
+        const query = `
+            SELECT * FROM stock
+            WHERE id_pastilla_venta ILIKE $1
+        `;
+        const result = await client.query(query, [`%${codigo}%`]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error en la consulta', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+app.get('/buscar-stock2', async (req, res) => {
     const { codigo } = req.query;
 
     if (!codigo) {
