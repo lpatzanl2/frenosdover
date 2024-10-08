@@ -274,6 +274,72 @@ app.get('/exportar-stock', async (req, res) => {
 
 
 
+//*************UPDATE TABLE STOCK******* */
+
+// Ruta para actualizar el stock
+app.post('/update-stock', async (req, res) => {
+    const { codigoPastilla, cantidad, costo, venta, codigoPastillaGlobal } = req.body;
+
+    try {
+        const query = `
+            UPDATE stock
+            SET stock = $1, precio_costo = $2, precio_venta = $3, id_pastilla = $4
+            WHERE id_pastilla_venta = $5
+        `;
+        const values = [cantidad, costo, venta, codigoPastillaGlobal, codigoPastilla];
+
+        const result = await client.query(query, values);
+
+        if (result.rowCount > 0) {
+            res.json({ message: 'Stock actualizado correctamente.' });
+        } else {
+            res.status(404).json({ message: 'No se encontró el registro para actualizar.' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar el stock', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+//METODO PARA ELIMINAR -----------------------------------  ------------------------------------------------------------------------------
+
+//METODO PARA ELIMINAR -----------------------------------  ------------------------------------------------------------------------------
+
+//METODO PARA ELIMINAR -----------------------------------  ------------------------------------------------------------------------------
+
+app.delete('/delete-product/:id', async (req, res) => {
+    const id_pastilla_venta = req.params.id;
+
+    try {
+        const result = await client.query('DELETE FROM stock WHERE id_pastilla_venta = $1', [id_pastilla_venta]);
+
+        if (result.rowCount > 0) {
+            console.log('Producto eliminado exitosamente'); // Agrega este log
+            res.json({ message: 'Producto eliminado exitosamente.' });
+        } else {
+            console.log('Producto no encontrado'); // Agrega este log
+            res.status(404).json({ message: 'Producto no encontrado.' });
+        }
+    } catch (error) {
+        console.error('Error al eliminar el producto:', error);
+        res.status(500).json({ message: 'Error al eliminar el producto.' });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

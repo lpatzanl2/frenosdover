@@ -303,24 +303,24 @@
 						<h4 class="modal-title">AGREGAR PRODUCTO NUEVO</h4>
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					</div>
-					<div class="modal-body">					
-						<div class="form-group">
-							<label>Codigo Pastilla</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Cantidad</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Costo</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Venta</label>
-							<input type="text" class="form-control" required>
-						</div>					
-					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label>Codigo Pastilla</label>
+                            <input type="text" class="form-control" name="codigo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input type="text" class="form-control" name="cantidad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Costo</label>
+                            <input type="text" class="form-control" name="costo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Venta</label>
+                            <input type="text" class="form-control" name="venta" required>
+                        </div>
+                    </div>
 					<div class="modal-footer">
 						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
 						<input type="submit" class="btn btn-success" value="Add">
@@ -330,61 +330,74 @@
 		</div>
 	</div>
 	<!-- Edit Modal HTML -->
-	<div id="editProductoModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form>
-					<div class="modal-header">						
-						<h4 class="modal-title">EDITAR PRODUCTO</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">					
-						<div class="form-group">
-							<label>Codigo Pastilla</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Cantidad</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Costo</label>
-							<input type="text" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Venta</label>
-							<input type="text" class="form-control" required>
-						</div>					
-					</div>
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-						<input type="submit" class="btn btn-info" value="Save">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+	<!-- Modal Editar Producto -->
+<div id="editProductoModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">						
+                    <h4 class="modal-title">EDITAR PRODUCTO</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <div class="form-group">
+                        <label>Codigo Pastilla</label>
+                        <label id="codigoPastillaLabel" name="codigoPastillaLabel" class="form-control"></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" class="form-control" name="cantidad" min="0" step="1" required >
+                    </div>
+                    <div class="form-group">
+                        <label>Costo</label>
+                        <input type="text" class="form-control" name="costo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Venta</label>
+                        <input type="text" class="form-control" name="venta" required>
+                    </div>	
+                    <div class="form-group">
+                        <label>Codigo Global</label>
+                        <label id="codigoPastillaLabelGlobal" name="codigoPastillaLabelGlobal" class="form-control"></label>
+                    </div>				
+                </div>
+                
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="submit" class="btn btn-info" value="Save">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 	<!-- Delete Modal HTML -->
-	<div id="deleteEmployeeModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form>
-					<div class="modal-header">						
-						<h4 class="modal-title">ELIMINAR PRODUCTO</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">					
-						<p>¿Seguro que quieres eliminar este producto?</p>
-						<p class="text-warning"><small>Esta acción no la podemos revertir.</small></p>
-					</div>
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-						<input type="submit" class="btn btn-danger" value="Delete">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+	<!-- Delete Modal HTML -->
+<!-- Delete Modal HTML -->
+<div id="deleteEmployeeModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">				
+                <h4 class="modal-title">Eliminar Producto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">				
+                <p>¿Estás seguro que deseas eliminar el producto con el código <span id="deleteCodigoPastilla"></span>?</p>
+                <p class="text-warning"><small>Esta acción no se puede deshacer.</small></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="deleteProductoId"> <!-- Este campo oculta almacenará el ID de la pastilla -->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
 
 
 
