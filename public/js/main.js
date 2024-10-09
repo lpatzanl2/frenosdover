@@ -692,6 +692,186 @@ document.getElementById('confirmDelete').addEventListener('click', function () {
     });
 });
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//IMPEDIMOS QUE ESCRIBAN EN EL INPUT DE CANTIDAD PARA STOCK, ASI SOLO CON LAS FLECHAS DARAN VALOR
+document.getElementById('castindadPastillaStock').addEventListener('keydown', function(e) {
+    // Permitir la tecla "Tab"
+    if (e.key === "Tab") {
+        return;
+    }
+    // Bloquear cualquier otra entrada desde el teclado
+    e.preventDefault();
+});
+
+
+
+
+document.getElementById('Id_pastilla').addEventListener('click', function() {
+    // Verificar si ya se han cargado las opciones para evitar llamadas repetidas
+    if (this.options.length > 1) return;
+
+    // Hacer la solicitud al servidor para obtener los valores
+    fetch('/get-pastillas')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('Id_pastilla'); // Asegúrate de que el id es correcto
+            data.forEach(pastilla => {
+                const option = document.createElement('option');
+                option.value = pastilla.id_pastilla;
+                option.textContent = pastilla.id_pastilla;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar los id_pastilla:', error);
+        });
+});
+
+//MOSTRAMOS EL DIV PARA AGREGAR MF PASTILLA SI NO EXISTE EN EL DROPDOWN
+document.getElementById('botonAgregarMFPastillaSiNoExiste').addEventListener('click', function() {
+    const customDiv = document.getElementById('customBackgroundDiv');
+    const divAgregarStock = document.getElementById('divAgregarStock');
+    divAgregarStock.classList.add('hidden');
+    pieAgregar.classList.add('hidden');
+    customDiv.classList.remove('hidden');
+});
+
+//MOSTRAMOS EL DIV INICIAL PARA AGREGAR STOCK Y OCULTAMOS MFPASTILLA AL ABRIR EL MODAL ADD PRODUCT
+document.getElementById('botonAgregarNuevaPastilla').addEventListener('click', function() {
+    const customDiv = document.getElementById('customBackgroundDiv');
+    const agregarStockDiv = document.getElementById('divAgregarStock');
+    const pieAgregar = document.getElementById('pieAgregar');
+
+    //Restablecemos los valores de todos los input
+    document.getElementById("codigoGlobalPastilla").value = "";
+    document.getElementById("ladoPastilla").selectedIndex = 0; // Restablecer al primer elemento
+    document.getElementById("dimesinoPastilla").value = "";
+    document.getElementById("codigoPastillaStock").value = "";
+    document.getElementById("castindadPastillaStock").value = "";
+    document.getElementById("costoPastilla").value = "";
+    document.getElementById("ventaPastilla").value = "";
+    document.getElementById("Id_pastilla").selectedIndex = 0; // Restablecer al primer elemento
+    
+
+    // Agregar la clase hidden al div customBackgroundDiv
+    customDiv.classList.add('hidden');
+    // Remover la clase hidden al div divAgregarStock
+    agregarStockDiv.classList.remove('hidden');
+    pieAgregar.classList.remove('hidden');
+});
+
+
+//----------------------- AGREGAMOS LOS DATOS DE MF PASTILLA
+
+document.getElementById("AgregarCodigoGlobal").addEventListener("click", async function(event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+
+    // Obtener los valores de los campos
+    const codigoGlobal = document.getElementById("codigoGlobalPastilla").value;
+    const ladoPastilla = document.getElementById("ladoPastilla").value;
+    const dimensionPastilla = document.getElementById("dimesinoPastilla").value;
+
+    // Validar que los campos no estén vacíos
+    if (!codigoGlobal || !ladoPastilla || !dimensionPastilla) {
+        alert("Por favor, llene todos los campos.");
+        return;
+    }
+
+    try {
+        // Verificar si el código global ya existe
+        const response = await fetch('/get-pastillas');
+        const pastillas = await response.json();
+        const existingIds = pastillas.map(pastilla => pastilla.id_pastilla);
+
+        if (existingIds.includes(codigoGlobal)) {
+            alert("El código global ya existe. Por favor, ingrese uno diferente.");
+            return;
+        }
+
+        // Enviar los datos al servidor para insertar en la base de datos
+        const insertResponse = await fetch('/insertar-pastilla', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id_pastilla: codigoGlobal,
+                lado_pastilla: ladoPastilla,
+                dimension_pastilla: dimensionPastilla
+            })
+        });
+
+        if (insertResponse.ok) {
+            alert("Pastilla agregada exitosamente.");
+            // Aquí puedes agregar lógica para limpiar los campos o cerrar el modal
+        } else {
+            alert("Error al agregar la pastilla. Por favor, inténtelo de nuevo.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Se produjo un error. Por favor, inténtelo de nuevo.");
+    }
+});
+
+//Mandamos los valores de los input a la tabla STOCK. Validando si los campos estan llenos
+
+document.getElementById('btnAddStock').addEventListener('click', async function (event) {
+    event.preventDefault(); // Previene el comportamiento por defecto del botón submit
+
+    // Obtener valores de los campos
+    const codigoPastillaStock = document.getElementById('codigoPastillaStock').value.trim();
+    const cantidad = document.getElementById('castindadPastillaStock').value.trim();
+    const costo = document.getElementById('costoPastilla').value.trim();
+    const venta = document.getElementById('ventaPastilla').value.trim();
+    const idPastilla = document.getElementById('Id_pastilla').value.trim();
+
+    // Verificar si todos los campos están llenos
+    if (!codigoPastillaStock || !cantidad || !costo || !venta || !idPastilla) {
+        alert('Por favor, complete todos los campos.');
+        return;
+    }
+
+    try {
+        // Verificar si el codigoPastillaStock ya existe en la base de datos
+        const response = await fetch(`/verificar-codigo/${codigoPastillaStock}`); // Crear un endpoint para verificar el código
+        const data = await response.json();
+
+        if (data.existe) {
+            alert('El código de pastilla ya existe en el stock.');
+        } else {
+            // Si el código no existe, hacer el insert
+            const insertResponse = await fetch('/agregar-stock', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_pastilla_venta: codigoPastillaStock,
+                    stock: cantidad,
+                    precio_costo: costo,
+                    precio_venta: venta,
+                    id_pastilla: idPastilla
+                })
+            });
+
+            if (insertResponse.ok) {
+                alert('Producto agregado al stock correctamente.');
+                // Aquí puedes agregar lógica para limpiar campos o cerrar el modal
+            } else {
+                alert('Error al agregar el producto al stock.');
+            }
+        }
+    } catch (error) {
+        console.error('Error en la operación:', error);
+        alert('Ocurrió un error. Intenta de nuevo.');
+    }
+});
+
+
+
+
+
+
 
 
 

@@ -236,7 +236,7 @@
                         <input type="text" id="crud-input" name="crud-input" placeholder="Ingrese su busqueda..." class="input">
 					</div>
 					<div class="col-sm-6">
-						<a href="#addPastillaModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Agregar Nueva Pastilla
+						<a href="#addPastillaModal" class="btn btn-success" data-toggle="modal" id="botonAgregarNuevaPastilla"><i class="material-icons">&#xE147;</i> <span>Agregar Nueva Pastilla
                         </span></a>
 						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Borrar</span></a>						
 					</div>
@@ -304,26 +304,64 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					</div>
 					<div class="modal-body">
-                        <div class="form-group">
-                            <label>Codigo Pastilla</label>
-                            <input type="text" class="form-control" name="codigo" required>
+                        <!-- RELLENAREMOS LA TABLA MFPASTILLA EN LA BASE DE DATOS-->
+                        <div class="form-group hidden" id="customBackgroundDiv">
+                            <label for="codigoGlobalPastilla">Codigo Global</label>
+                            <input type="text" class="form-control" id="codigoGlobalPastilla" name="codigoGlobalPastilla" placeholder="MF150" required maxlength="10">
+                            
+                            <label for="ladoPastilla">Lado Pastilla</label>
+                            <select class="form-control" id="ladoPastilla" name="ladoPastilla" required>
+                                <option value="" disabled selected>Seleccione una opción</option>
+                                <option value="FRONT/FRONTAL">FRONT/FRONTAL</option>
+                                <option value="REAR/TRASERA">REAR/TRASERA</option>
+                            </select>
+                            
+                            <label for="dimesinoPastilla">Dimensión Pastilla</label>
+                            <input type="text" class="form-control" id="dimesinoPastilla" name="dimesinoPastilla" placeholder="98 X 68 X 16 mm" required maxlength="35">
+                            <br/>
+                            <br/>
+                            <input id="AgregarCodigoGlobal" type="submit" class="btn btn-success" value="Agregar codigo Global">
+
                         </div>
-                        <div class="form-group">
-                            <label>Cantidad</label>
-                            <input type="text" class="form-control" name="cantidad" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Costo</label>
-                            <input type="text" class="form-control" name="costo" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Venta</label>
-                            <input type="text" class="form-control" name="venta" required>
+                        
+                        <!-- RELLENAREMOS LA TABLA STOCK EN LA BD-->
+                        <div class="form-group" id="divAgregarStock">
+                            <label for="codigoPastillaStock">Código Pastilla</label>
+                            <input type="text" class="form-control" id="codigoPastillaStock" name="codigoPastillaStock" placeholder="MF150HP" required required maxlength="10">
+                        
+                            <label for="castindadPastillaStock">Cantidad</label>
+                            <input type="number" class="form-control" id="castindadPastillaStock" name="castindadPastillaStock" required min="0">
+                        
+                            <label for="costoPastilla">Costo</label>
+                            <input type="text" class="form-control" id="costoPastilla" name="costoPastilla" required>
+                        
+                            <label for="ventaPastilla">Venta</label>
+                            <input type="text" class="form-control" id="ventaPastilla" name="ventaPastilla" required>
+                            
+                            <label for="Id_pastilla">Código Pastilla Global</label>
+                            <select id="Id_pastilla" class="form-control" name="Id_pastilla" required>
+                                <option value="" disabled selected>Seleccione el código</option>
+                                <!-- Las opciones se cargarán dinámicamente -->
+                            </select>
+
                         </div>
                     </div>
-					<div class="modal-footer">
+                    
+					<div class="modal-footer" id="pieAgregar">
 						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-						<input type="submit" class="btn btn-success" value="Add">
+						<input type="submit" id="btnAddStock" class="btn btn-success" value="Agregar A Stock">
+
+                        <br/>
+                        <br/>
+
+                        <label class="label-custom">Si no existe el codigo MF Global, presione el boton de abajo. </label>
+                        
+                        <button id="botonAgregarMFPastillaSiNoExiste" class="btn-17">
+                            <span class="text-container">
+                              <span class="text">Agregar Global</span>
+                            </span>
+                          </button>
+
 					</div>
 				</form>
 			</div>
@@ -395,12 +433,6 @@
         </div>
     </div>
 </div>
-
-
-    
-
-
-
     <!---------------------------------C R U D ↑ ↑↑↑↑↑↑↑----------------------------------------------------------->
     <!--------------------------------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------------------------------->
@@ -411,7 +443,8 @@
     
     
     
-
+ 
+      
 
     
 

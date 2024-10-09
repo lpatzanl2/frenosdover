@@ -326,6 +326,63 @@ app.delete('/delete-product/:id', async (req, res) => {
     }
 });
 
+//------------------------------------------------------------------------------------
+//  ---------------- INGRESAMOS UN NUEVO PRODUCTO
+//Retornamos todos los valores de la columna "id_pastilla" en la tabla MFPASTILLA
+
+app.get('/get-pastillas', async (req, res) => {
+    try {
+        const result = await client.query('SELECT id_pastilla FROM MFPASTILLA');
+        res.json(result.rows); // Enviamos el resultado como JSON
+    } catch (error) {
+        console.error('Error al obtener los id_pastilla:', error);
+        res.status(500).json({ message: 'Error al obtener los id_pastilla.' });
+    }
+});
+
+
+//Agregamos MF pastilla
+// Endpoint para insertar un nuevo producto
+app.post('/insertar-pastilla', async (req, res) => {
+    const { id_pastilla, lado_pastilla, dimension_pastilla } = req.body;
+
+    try {
+        const result = await client.query(
+            'INSERT INTO mfPastilla (id_pastilla, lado_pastilla, dimension_pastilla) VALUES ($1, $2, $3)',
+            [id_pastilla, lado_pastilla, dimension_pastilla]
+        );
+        res.status(201).json({ message: 'Pastilla agregada exitosamente.' });
+    } catch (error) {
+        console.error('Error al insertar la pastilla:', error);
+        res.status(500).json({ message: 'Error al agregar la pastilla.' });
+    }
+});
+
+//erificar si el código existe en STOCK
+app.get('/verificar-codigo/:codigo', async (req, res) => {
+    const codigo = req.params.codigo;
+    try {
+        const result = await client.query('SELECT id_pastilla_venta FROM stock WHERE id_pastilla_venta = $1', [codigo]);
+        res.json({ existe: result.rowCount > 0 }); // Retorna true si existe
+    } catch (error) {
+        console.error('Error al verificar código:', error);
+        res.status(500).json({ message: 'Error al verificar el código.' });
+    }
+});
+
+//Agregar el stock:
+
+app.post('/agregar-stock', async (req, res) => {
+    const { id_pastilla_venta, stock, precio_costo, precio_venta, id_pastilla } = req.body;
+    try {
+        await client.query('INSERT INTO stock (id_pastilla_venta, stock, precio_costo, precio_venta, id_pastilla) VALUES ($1, $2, $3, $4, $5)', [id_pastilla_venta, stock, precio_costo, precio_venta, id_pastilla]);
+        res.status(201).json({ message: 'Stock agregado correctamente.' });
+    } catch (error) {
+        console.error('Error al agregar stock:', error);
+        res.status(500).json({ message: 'Error al agregar el stock.' });
+    }
+});
+
 
 
 
