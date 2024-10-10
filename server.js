@@ -384,6 +384,137 @@ app.post('/agregar-stock', async (req, res) => {
 });
 
 
+//-------------------------Consulta Vehiculo CRUD
+
+app.get('/buscar-pastilla-pastillita-Crud', async (req, res) => {
+    const { codigo } = req.query;
+
+    if (!codigo) {
+        return res.status(400).json({ message: 'El parámetro de búsqueda es obligatorio.' });
+    }
+
+    try {
+        // Usar LIKE para buscar patrones que contengan el código ingresado
+        const query = `
+            SELECT 
+                pd.ID_Detalle, 
+                pd.ID_Pastilla, 
+                m.nombre_marca, 
+                pd.Detalle_Serie_Modelo 
+            FROM 
+                pastilla_detalle_serie_modelo pd
+            JOIN 
+                marca m ON pd.ID_Marca = m.ID_Marca
+            WHERE 
+                pd.ID_Pastilla ILIKE $1
+        `;
+        const result = await client.query(query, [`%${codigo}%`]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error en la consulta', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+// Ruta para obtener las marcas
+app.get('/obtener-marcas', async (req, res) => {
+    try {
+        const query = 'SELECT id_marca, nombre_marca FROM marca';
+        const result = await client.query(query);
+
+        // Concatenar nombre_marca e id_marca
+        const marcas = result.rows.map(row => ({
+            id: row.id_marca,
+            nombre: `${row.nombre_marca} - ${row.id_marca}`
+        }));
+
+        res.json(marcas);
+    } catch (error) {
+        console.error('Error en la consulta de marcas', error);
+        res.status(500).json({ message: 'Error al obtener las marcas' });
+    }
+});
+
+//Mandamos el update table a series modelo vehiculo 
+
+// Ruta para actualizar el detalle de serie modelo
+app.put('/actualizar-pastilla', async (req, res) => {
+    const { id_detalle, id_pastilla, id_marca, detalle_serie_modelo } = req.body;
+
+    if (!id_detalle || !id_pastilla || !id_marca || !detalle_serie_modelo) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+    }
+
+    try {
+        const query = `
+            UPDATE pastilla_detalle_serie_modelo
+            SET id_pastilla = $1, id_marca = $2, detalle_serie_modelo = $3
+            WHERE id_detalle = $4
+        `;
+        await client.query(query, [id_pastilla, id_marca, detalle_serie_modelo, id_detalle]);
+        
+        res.json({ message: 'Actualización exitosa.' });
+    } catch (error) {
+        console.error('Error al actualizar el detalle:', error);
+        res.status(500).json({ message: 'Error al actualizar el detalle.' });
+    }
+});
+
+//Eliminar el registro
+
+// Ruta para eliminar un registro por ID
+// Ruta para eliminar un registro por ID
+app.delete('/eliminar-pastilla/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = 'DELETE FROM pastilla_detalle_serie_modelo WHERE id_detalle = $1';
+        const result = await client.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Registro no encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Registro eliminado exitosamente.' });
+    } catch (error) {
+        console.error('Error al eliminar el registro:', error);
+        res.status(500).json({ message: 'Error en el servidor.' });
+    }
+});
+
+//----------- INSERT INTO la tabla de modelo detalle 
+
+app.post('/insertar-detalle-serie-modelo', async (req, res) => {
+    const { id_pastilla, id_marca, detalle_serie_modelo } = req.body;
+
+    // Comprobación de si los valores son válidos
+    if (!id_pastilla || !id_marca || !detalle_serie_modelo) {
+        return res.status(400).json({ message: 'Todos los campos son requeridos.' });
+    }
+
+    try {
+        const query = `
+            INSERT INTO pastilla_detalle_serie_modelo (id_pastilla, id_marca, detalle_serie_modelo)
+            VALUES ($1, $2, $3)
+        `;
+        
+        // Ejecutar la consulta
+        await client.query(query, [id_pastilla, id_marca, detalle_serie_modelo]);
+        res.status(201).json({ message: 'Registro guardado correctamente.' });
+    } catch (error) {
+        console.error('Error al insertar en la base de datos:', error);
+        res.status(500).json({ message: 'Error al guardar los datos.' });
+    }
+});
+
+
+
+
+
+
+
+
 
 
 

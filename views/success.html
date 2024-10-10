@@ -87,7 +87,7 @@
                 <li><a href="#" id="consulta-vehiculo">Consulta Por Vehiculo</a></li>
                 <li><a href="#" id="consulta-stock">Consulta Inventario</a></li>
                 <li><a href="#" id="gestion-inventario">Gestión del inventario</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li><a href="#" id="Gestión-Detalle-Pastilla">Gestión Detalle Pastilla</a></li>
             </ul>
         </nav>
     </header>
@@ -124,7 +124,6 @@
     
 
     <div id="vehiculo-container" class="hidden" >
-        
         <br/>
             <div class="table-title">
                 <div class="row">
@@ -238,7 +237,8 @@
 					<div class="col-sm-6">
 						<a href="#addPastillaModal" class="btn btn-success" data-toggle="modal" id="botonAgregarNuevaPastilla"><i class="material-icons">&#xE147;</i> <span>Agregar Nueva Pastilla
                         </span></a>
-						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Borrar</span></a>						
+						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Borrar</span></a>	
+                        
 					</div>
                 </div>
             </div>
@@ -294,7 +294,7 @@
             </div>
         </div>
     </div>
-	<!-- Edit Modal HTML -->
+	<!-- add Modal HTML -->
 	<div id="addPastillaModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -430,6 +430,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -437,6 +438,136 @@
     <!--------------------------------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------------------------------->
 
+
+
+
+
+
+
+
+
+    
+
+ <!----------------------⇊⇊⇊⇊⇊⇊⇊⇊⇊C R U D  - DETALLE CONSULTA POR VEHICULO ⇊⇊⇊⇊⇊⇊⇊----------------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------->
+
+<div id="crud_container_consulta_vehiculo" class="hidden">
+        
+    <br/>
+    <div class="table-title">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>CONSULTA POR VEHICULO - <b>FRENOS DOVER</b></h2>
+            </div>
+            <div class="col-sm-6">
+                <a href="#modalAddpastilla_detalle_serie_modelo" class="btn btn-success" data-toggle="modal" id="botonAgregarNuevaPastilla"><i class="material-icons">&#xE147;</i> <span>Agregar Nuevo Registro
+                </span></a>                
+            </div>
+        </div>
+    </div>
+
+<div class="form-container">
+
+    
+    <label for="codigo-serie-marca">Modelo Pastilla:</label>
+    <input type="text" id="input-pastillaCodigo-crud" name="input-pastillaCodigo-crud">
+</div>
+<table id="tabla_modelo_crud"  class="hidden table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>ID Detalle</th>
+            <th>ID Pastilla</th>
+            <th>Marca</th>
+            <th>Detalle Serie Modelo</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="vehiculo-body-crud">
+        <!-- rellenaremos aqui con la data retornada -->
+    </tbody>
+</table>
+</div>
+
+
+<!--- MODAL PARA EDITAR LOS REGISTROS-->
+<div id="editarCrudBusquedaModelo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">						
+                    <h4 class="modal-title">EDITAR PRODUCTO</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <div class="form-group">
+                        <label>ID Detalle</label>
+                        <label id="lableIdDetalleBusquedaCrud" name="lableIdDetalleBusquedaCrud" class="form-control"></label>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Pastilla</label>
+                        <label id="lableIdPastillaBusquedaCrud" name="lableIdPastillaBusquedaCrud" class="form-control"></label>
+                    </div>
+                    <label for="Id_pastilla">Marca</label>
+                    <select id="selectMarca" class="form-control" name="selectMarca" required>
+                        <option value="" disabled selected>Seleccione la marca</option>
+                        <!-- Las opciones se cargarán dinámicamente -->
+                    </select>
+                    <div class="form-group">
+                        <label>Detalle Serie Modelo</label>
+                        <input id="inputModalDetalleSerieModelo" type="text" class="form-control" name="venta" required>
+                    </div>	
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="actualizarVehiculoCrud">Actualizar</button>
+                    </div>	
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--------MODAL PARA ADD EL REGISTRO-->
+
+<div id="modalAddpastilla_detalle_serie_modelo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formAddModeloMarca"> <!-- ID aquí -->
+                <div class="modal-header">
+                    <h4 class="modal-title">AGREGAR NUEVO REGISTRO</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" id="divAgregarpastilla_detalle_serie_modelo"> 
+                        <div class="form-group">         
+                            <label for="Id_pastilla">Código Pastilla Global</label>
+                            <select id="GlobalPastillaModelo" class="form-control" name="GlobalPastillaModelo" required>
+                                <option value="" disabled selected>Seleccione el código</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Marca</label>
+                            <select id="selectMarcaModelo" class="form-control" name="sselectMarcaModelo" required>
+                                <option value="" disabled selected>Seleccione la marca</option>
+                            </select>
+                            <label>Detalle Serie Modelo</label>
+                            <input id="inputAddModelo" type="text" class="form-control" name="inputAddModelo" required maxlength="100">
+                        </div> 
+                    </div>
+                    <div class="modal-footer" id="MarcaModelo">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                        <input type="submit" id="btnAddModeloMarcarecord" class="btn btn-success" value="Agregar Registro">
+                    </div>    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+    <!---------------------------------C R U D ↑ ↑↑↑↑↑↑↑----------------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------------->
 
 
 

@@ -16,7 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const stockLink = document.getElementById('consulta-stock');
     
     const navGestionInvetario = document.getElementById('gestion-inventario');
+    const GestionDetallePastilla = document.getElementById('Gestión-Detalle-Pastilla');
+
+    
     const crudContainer = document.getElementById('crud_container');
+    const crud_container_consulta_vehiculo = document.getElementById('crud_container_consulta_vehiculo');
+    
 
 
     
@@ -47,6 +52,7 @@ vehiculoLink.addEventListener('click', async (e) => {
     stockContainer.classList.add('hidden');
     crudContainer.classList.add('hidden');
     nav.classList.remove('visible');
+    crud_container_consulta_vehiculo.classList.add('hidden');
 });
 
 
@@ -208,6 +214,7 @@ async function buscarPastillaPastillita() {
         vehiculoContainer.classList.add('hidden');
         stockContainer.classList.add('hidden');
         crudContainer.classList.add('hidden');
+        crud_container_consulta_vehiculo.classList.add('hidden');
         nav.classList.remove('visible');
     });
     
@@ -282,6 +289,7 @@ async function buscarPastillaPastillita() {
         vehiculoContainer.classList.add('hidden');
         stockContainer.classList.remove('hidden');
         crudContainer.classList.add('hidden');
+        crud_container_consulta_vehiculo.classList.add('hidden');
         nav.classList.remove('visible');
     });
 
@@ -396,6 +404,7 @@ navGestionInvetario.addEventListener('click', async (b) => {
     vehiculoContainer.classList.add('hidden');
     stockContainer.classList.add('hidden');
     crudContainer.classList.remove('hidden');
+    crud_container_consulta_vehiculo.classList.add('hidden');
     nav.classList.remove('visible');
 });
 
@@ -866,6 +875,382 @@ document.getElementById('btnAddStock').addEventListener('click', async function 
         alert('Ocurrió un error. Intenta de nuevo.');
     }
 });
+
+
+//------------------------------------------ BUSQUEDA VEHICULO CRUD
+
+GestionDetallePastilla.addEventListener('click', async (e) => {
+    e.preventDefault();
+    consultaContainer.classList.add('hidden');
+    vehiculoContainer.classList.add('hidden');
+    stockContainer.classList.add('hidden');
+    crudContainer.classList.add('hidden');
+    nav.classList.remove('visible');
+    crud_container_consulta_vehiculo.classList.remove('hidden');
+});
+
+
+//obtenemos lo que tiene el input para modelo
+const inputcodigopastillitaCrud = document.getElementById('input-pastillaCodigo-crud');
+
+//obtenemos la tabla su body
+const resultBodyVehiculoCrud = document.getElementById('vehiculo-body-crud');
+
+//obtenemos toda la tabla
+const resultTableVehiculoCrud = document.getElementById('tabla_modelo_crud');
+
+
+
+
+inputcodigopastillitaCrud.addEventListener('input', async () => {
+    //limpiamos los otros inputs
+
+    const codigoPastillaCrud = inputcodigopastillitaCrud.value.trim();
+
+    if (codigoPastillaCrud.length >= 2) {
+        await buscarPastilla6();
+    } else {
+        resultBodyVehiculoCrud.innerHTML = '';
+        resultTableVehiculoCrud.classList.add('hidden');
+    }
+});
+
+
+
+
+//--------------- BUSCAR POR PASTILLA -----------------
+
+//El input empieza a escuchar pra MARCA
+
+async function buscarPastilla6() {
+    const codigoPastilla = inputcodigopastillitaCrud.value.trim();
+
+    if (codigoPastilla === '') {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/buscar-pastilla-pastillita-Crud?codigo=${codigoPastilla}`);
+
+        if (!response.ok) {
+            throw new Error('Error en la respuesta de la red.');
+        }
+
+        const data = await response.json();
+        resultBodyVehiculoCrud.innerHTML = '';
+
+        if (data.length === 0) {
+            resultBodyVehiculoCrud.innerHTML = '<tr><td colspan="4">No se encontraron resultados.</td></tr>';
+        } else {
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id_detalle}</td>
+                    <td>${row.id_pastilla}</td>
+                    <td>${row.nombre_marca || 'No disponible'}</td> <!-- Cambiado aquí para mostrar el nombre de la marca -->
+                    <td>${row.detalle_serie_modelo}</td>
+                    <td>
+                        <a href="#editarCrudBusquedaModelo" class="edit" data-toggle="modal" data-id-detalle="${row.id_detalle}" data-id-pastilla="${row.id_pastilla}">
+                            <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                        </a>
+
+                        <a class="delete" data-toggle="modal" data-id="${row.id_detalle}">
+                            <i class="material-icons" data-toggle="tooltip">&#xE872;</i>
+                        </a>
+
+
+   
+                    </td>
+                `;
+                resultBodyVehiculoCrud.appendChild(tr);
+            });
+            
+        }
+
+        resultTableVehiculoCrud.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error al buscar pastilla', error);
+        alert('Hubo un problema al realizar la búsqueda. Verifique la consola para más detalles.');
+    }
+};
+
+//Traemos los datos a la label
+
+// Escuchar eventos en los botones de edición en la tabla
+// Escuchar eventos en los botones de edición en la tabla
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.edit')) {
+        const editButton = event.target.closest('.edit');
+        
+        // Obtener los valores de los atributos data-id-detalle y data-id-pastilla
+        const idDetalle = editButton.getAttribute('data-id-detalle');
+        const idPastilla = editButton.getAttribute('data-id-pastilla');
+        
+        // Obtener el valor de la columna "detalle_serie_modelo" de la fila correspondiente
+        const detalleSerieModelo = editButton.closest('tr').querySelector('td:nth-child(4)').textContent;
+
+        // Colocar los valores en las etiquetas e input correspondientes en el modal
+        const modal = document.querySelector('#editarCrudBusquedaModelo');
+        modal.querySelector('#lableIdDetalleBusquedaCrud').textContent = idDetalle;
+        modal.querySelector('#lableIdPastillaBusquedaCrud').textContent = idPastilla;
+        modal.querySelector('#inputModalDetalleSerieModelo').value = detalleSerieModelo;
+
+        // Mostrar el modal
+        $('#editarCrudBusquedaModelo').modal('show');
+    }
+});
+
+//Rellenamos el select con las marcas
+// Función para cargar las marcas en el select
+async function cargarMarcas() {
+    try {
+        const response = await fetch('/obtener-marcas');
+        const marcas = await response.json();
+        
+        const selectMarca = document.querySelector('#selectMarca');
+        
+        selectMarca.innerHTML = '<option value="" disabled selected>Seleccione la marca</option>'; // Resetear opciones
+        
+        marcas.forEach(marca => {
+            const option = document.createElement('option');
+            option.value = marca.id;
+            option.textContent = marca.nombre;
+            selectMarca.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar las marcas:', error);
+    }
+}
+
+// Escuchar eventos en los botones de edición en la tabla
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.edit')) {
+        const editButton = event.target.closest('.edit');
+        
+        // Obtener los valores de los atributos data-id-detalle y data-id-pastilla
+        const idDetalle = editButton.getAttribute('data-id-detalle');
+        const idPastilla = editButton.getAttribute('data-id-pastilla');
+        
+        // Obtener el valor de la columna "detalle_serie_modelo" de la fila correspondiente
+        const detalleSerieModelo = editButton.closest('tr').querySelector('td:nth-child(4)').textContent;
+
+        // Colocar los valores en las etiquetas e input correspondientes en el modal
+        const modal = document.querySelector('#editarCrudBusquedaModelo');
+        modal.querySelector('#lableIdDetalleBusquedaCrud').textContent = idDetalle;
+        modal.querySelector('#lableIdPastillaBusquedaCrud').textContent = idPastilla;
+        modal.querySelector('#inputModalDetalleSerieModelo').value = detalleSerieModelo;
+
+        // Cargar las marcas en el select
+        cargarMarcas();
+
+        // Mostrar el modal
+        $('#editarCrudBusquedaModelo').modal('show');
+    }
+});
+
+//Mandamos el update table al presionar el boton
+document.getElementById('actualizarVehiculoCrud').addEventListener('click', async () => {
+    const id_detalle = document.getElementById('lableIdDetalleBusquedaCrud').innerText; // Obtener ID Detalle
+    const id_pastilla = document.getElementById('lableIdPastillaBusquedaCrud').innerText; // Obtener ID Pastilla
+    const id_marca = document.getElementById('selectMarca').value; // Obtener ID Marca
+    const detalle_serie_modelo = document.getElementById('inputModalDetalleSerieModelo').value; // Obtener Detalle Serie Modelo
+
+    const data = {
+        id_detalle,
+        id_pastilla,
+        id_marca,
+        detalle_serie_modelo
+    };
+
+    try {
+        const response = await fetch('/actualizar-pastilla', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(result.message); // Muestra mensaje de éxito
+            // Aquí puedes cerrar el modal o realizar cualquier otra acción necesaria
+            $('#editarCrudBusquedaModelo').modal('hide');
+            // También podrías recargar la tabla o realizar otra consulta para mostrar los datos actualizados
+        } else {
+            alert(result.message); // Muestra mensaje de error
+        }
+    } catch (error) {
+        console.error('Error al realizar la actualización:', error);
+        alert('Error al realizar la actualización.');
+    }
+});
+
+
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+// Captura el evento de clic en el botón de eliminar
+document.addEventListener('click', (event) => {
+    if (event.target.closest('.delete')) {
+        const idDetalle = event.target.closest('.delete').dataset.id; // Obtener el ID desde el atributo data-id
+        
+        // Mostrar un mensaje de confirmación antes de eliminar
+        const confirmation = confirm(`¿Deseas eliminar el registro ${idDetalle}?`);
+        
+        if (confirmation) {
+            // Si el usuario acepta, procede con la eliminación
+            eliminarRegistro(idDetalle);
+        }
+    }
+});
+
+// Función para eliminar el registro
+async function eliminarRegistro(idDetalle) {
+    try {
+        // Aquí podrías cerrar cualquier modal que esté abierto antes de eliminar
+        $('#deleteEmployeeModal').modal('hide'); // Asegúrate de que este es el modal que deseas ocultar
+        
+        const response = await fetch(`/eliminar-pastilla/${idDetalle}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error('Error en la eliminación del registro.');
+        }
+
+        alert('Registro eliminado exitosamente.');
+        buscarPastilla6(); // Actualiza la tabla después de eliminar
+    } catch (error) {
+        console.error('Error al eliminar el registro:', error);
+        alert('Hubo un problema al eliminar el registro. Verifique la consola para más detalles.');
+    }
+}
+
+//Funcion para agregar un nuevo record
+
+// Rellenamos el select con las marcas
+async function cargarMarcas2() {
+    try {
+        const response = await fetch('/obtener-marcas');
+        const marcas = await response.json();
+        
+        const selectMarca = document.querySelector('#selectMarcaModelo'); // Cambiado a 'selectMarcaModelo'
+        
+        selectMarca.innerHTML = '<option value="" disabled selected>Seleccione la marca</option>'; // Resetear opciones
+        
+        marcas.forEach(marca => {
+            const option = document.createElement('option');
+            option.value = marca.id; // Asegúrate de que 'marca.id' y 'marca.nombre' sean correctos
+            option.textContent = marca.nombre;
+            selectMarca.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar las marcas:', error);
+    }
+}
+
+// Escuchar el evento de mostrar el modal
+$('#modalAddpastilla_detalle_serie_modelo').on('show.bs.modal', function (e) {
+    cargarMarcas2(); // Llamar a la función para cargar marcas
+});
+
+//Rellenamos el select de MFpastillas global
+// Función para cargar las pastillas en el select
+async function cargarPastillas() {
+    try {
+        const response = await fetch('/get-pastillas');
+        const pastillas = await response.json();
+        
+        const selectPastilla = document.querySelector('#GlobalPastillaModelo'); // ID del select
+
+        selectPastilla.innerHTML = '<option value="" disabled selected>Seleccione el código</option>'; // Resetear opciones
+        
+        pastillas.forEach(pastilla => {
+            const option = document.createElement('option');
+            option.value = pastilla.id_pastilla; // Asegúrate de que 'pastilla.id_pastilla' sea el campo correcto
+            option.textContent = pastilla.id_pastilla; // Puedes cambiar esto si deseas mostrar otro texto
+            selectPastilla.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar las pastillas:', error);
+    }
+}
+
+// Escuchar el evento de mostrar el modal
+$('#modalAddpastilla_detalle_serie_modelo').on('show.bs.modal', function (e) {
+    cargarPastillas(); // Llamar a la función para cargar pastillas
+});
+
+//----------- acemos el insert into a la tabla en la base de datos
+
+document.getElementById('btnAddModeloMarcarecord').addEventListener('click', async function(event) {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del botón
+
+    // Obtener los valores de los campos
+    const idPastilla = document.getElementById('GlobalPastillaModelo').value.trim();
+    const idMarca = document.getElementById('selectMarcaModelo').value.trim();
+    const detalleSerieModelo = document.getElementById('inputAddModelo').value.trim();
+
+    // Imprimir valores en la consola para verificar
+    console.log('ID Pastilla:', idPastilla);
+    console.log('ID Marca:', idMarca);
+    console.log('Detalle Serie Modelo:', detalleSerieModelo); // Asegúrate de que este campo no esté vacío
+
+    // Verificar que todos los campos estén llenos
+    if (!idPastilla || !idMarca || !detalleSerieModelo) {
+        alert('Por favor, complete todos los campos.');
+        return;
+    }
+
+    // Crear el objeto con los datos a enviar
+    const data = {
+        id_pastilla: idPastilla,
+        id_marca: idMarca,
+        detalle_serie_modelo: detalleSerieModelo
+    };
+
+    try {
+        const response = await fetch('/insertar-detalle-serie-modelo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        // Verificar la respuesta del servidor
+        if (response.ok) {
+            alert("Los datos se guardaron correctamente.");
+            $('#modalAddpastilla_detalle_serie_modelo').modal('hide'); // Cerrar el modal
+            document.getElementById('formAddModeloMarca').reset(); // Limpiar el formulario
+        } else {
+            const errorData = await response.json();
+            alert("Error al guardar los datos: " + errorData.message);
+        }
+    } catch (error) {
+        console.error('Error al realizar la solicitud:', error);
+        alert("Ocurrió un error al guardar los datos.");
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
