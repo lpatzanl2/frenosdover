@@ -1507,15 +1507,38 @@ function deleteProduct(event) {
 invoiceTableBody.addEventListener('click', deleteProduct);
 
 
-//Bloqueamos Cantidad, para que no permita entradas, mas que del mouse up and down
-document.getElementById('cantidad_factura').addEventListener('keydown', function(e) {
-    // Permitir la tecla "Tab"
-    if (e.key === "Tab") {
-        return;
+const cantidadInput2 = document.getElementById('cantidad_factura');
+
+// Bloquear teclas no permitidas
+cantidadInput2.addEventListener('keydown', function(e) {
+    const allowedKeys = [
+        'Backspace', 'Delete', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'
+    ];
+
+    // Permitir solo números (fila superior y teclado numérico) y teclas permitidas
+    if (
+        (e.key >= '0' && e.key <= '9') || // Números en la fila superior
+        (e.key >= 'Numpad0' && e.key <= 'Numpad9') || // Números del teclado numérico
+        allowedKeys.includes(e.key) // Teclas especiales permitidas
+    ) {
+        return; // Permitir
     }
-    // Bloquear cualquier otra entrada desde el teclado
+
+    // Bloquear cualquier otra tecla
     e.preventDefault();
 });
+
+// Bloquear pegado de valores no numéricos
+cantidadInput2.addEventListener('paste', function(e) {
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('text');
+
+    // Verificar si lo pegado es un número entero
+    if (!/^\d+$/.test(pastedData)) {
+        e.preventDefault(); // Bloquear si no es un número entero
+    }
+});
+
 
 
 
