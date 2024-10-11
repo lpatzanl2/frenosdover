@@ -364,7 +364,10 @@ table.table .avatar {
     border-radius: 2px;
     box-shadow: none;
     border-color: #dddddd;
+    
 }
+
+
 .modal textarea.form-control {
     resize: vertical;
 }
@@ -613,4 +616,153 @@ table.table .avatar {
     font-weight: bold;   /* Establece el texto en negrita */
     font-size: 1em;    /* Tamaño de fuente más pequeño (ajusta según necesites) */
     text-align: center;
+}
+
+
+/*--------------------- FACTURA */
+
+.invoice-container {
+    background-color: #ffffff; /* Fondo blanco para el contenedor */
+    border: 1px solid #dee2e6; /* Borde gris */
+    padding: 30px; /* Espaciado interno */
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-top: 50px; /* Espaciado superior */
+}
+
+h1.text-center {
+    padding-bottom: 15px;
+    background: #435d7d;
+    color: #fff;
+    padding: 16px 30px;
+    margin: -20px -25px 10px;
+    border-radius: 3px 3px 0 0;
+}
+
+.invoice-header, .product-entry {
+    background-color: #e9ecef; /* Fondo gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 20px; /* Espaciado interno */
+    margin-bottom: 20px; /* Margen inferior */
+}
+
+.invoice-header label, .product-entry label {
+    font-weight: bold; /* Texto en negrita */
+}
+
+
+
+.boton_factura {
+    --color: #435d7d;
+    --color2: rgb(10, 25, 30);
+    padding: 0.8em 1.75em;
+    background-color: transparent;
+    border-radius: 6px;
+    border: .3px solid var(--color);
+    transition: .5s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+    font-weight: bold; /* Texto en negrita */
+    font-size: 17px;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    color: black; /* Color del texto negro */
+}
+
+.boton_factura::after, .boton_factura::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform: skew(90deg) translate(-50%, -50%);
+    position: absolute;
+    inset: 50%;
+    left: 25%;
+    z-index: -1;
+    transition: .5s ease-out;
+    background-color: var(--color);
+}
+
+.boton_factura::before {
+    top: -50%;
+    left: -25%;
+    transform: skew(90deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.boton_factura:hover::before {
+    transform: skew(45deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.boton_factura:hover::after {
+    transform: skew(45deg) translate(-50%, -50%);
+}
+
+.boton_factura:hover {
+    color: var(--color2);
+}
+
+.boton_factura:active {
+    filter: brightness(.7);
+    transform: scale(.98);
+}
+
+
+h2 {
+    padding-bottom: 15px;
+    background: #435d7d;
+    color: #fff;
+    padding: 16px 30px;
+    margin: -20px -25px 10px;
+    border-radius: 3px 3px 0 0;
+}
+
+#total {
+    font-size: 3rem; /* Aumentar tamaño del total */
+    color: #76e9fd; /* Color verde */
+}
+
+
+
+.FacturaClassInputs {
+    border-radius: 2px; /* Bordes redondeados */
+    box-shadow: none; /* Sin sombra */
+    border-color: #dddddd; /* Color del borde */
+    font-size: 1.5rem;
+}
+
+.FacturaClassInputs:focus {
+    border-color: #80bdff; /* Color del borde al enfocar */
+    outline: 0; /* Sin contorno */
+    box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra al enfocar */
+}
+
+.FacturaClassInputs::placeholder {
+    color: #6c757d; /* Color del texto del placeholder */
+    opacity: 1; /* Asegurar visibilidad del placeholder */
+}
+
+.delete-product {
+    background-color: #dc3545; /* Color de fondo rojo */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 6px 10px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar el ratón */
+    font-size: 14px; /* Tamaño de fuente */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.delete-product:hover {
+    background-color: #c82333; /* Color de fondo más oscuro al pasar el ratón */
+}
+
+
+.remove-product {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
 }

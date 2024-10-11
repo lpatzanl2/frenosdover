@@ -541,6 +541,76 @@ app.post('/insertar-detalle-serie-modelo', async (req, res) => {
 
 
 
+//------------------- FACTURA ----------------
+
+// Ruta para obtener todos los clientes
+app.get('/clientes', async (req, res) => {
+    try {
+        const query = 'SELECT nit, nombre, telefono, direccion FROM clientes';
+        const result = await client.query(query);
+
+        // Formatear los resultados en el formato requerido
+        const clientes = result.rows.map(cliente => ({
+            display: `${cliente.nit} - ${cliente.nombre} - ${cliente.telefono} - ${cliente.direccion}`,
+            nit: cliente.nit
+        }));
+
+        res.json(clientes);
+    } catch (error) {
+        console.error('Error al obtener los clientes:', error);
+        res.status(500).json({ message: 'Error al obtener los clientes.' });
+    }
+});
+
+
+
+
+//Cargamos los datos a PARA AGREGAR PRODUCTO, TODOS SUS CAMPOS Y LOS SELCT
+// Cargamos los datos a ID PRODUCTO
+app.get('/productos', async (req, res) => {
+    try {
+        const result = await client.query('SELECT id_pastilla_venta, id_pastilla, precio_venta FROM stock'); // Incluye id_pastilla
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error al obtener los productos:', error);
+        res.status(500).json('Error del servidor');
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
 
 
 

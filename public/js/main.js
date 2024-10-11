@@ -1272,6 +1272,279 @@ document.getElementById('btnAddModeloMarcarecord').addEventListener('click', asy
 
 
 
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------
+//-********************* FACTURAS ***/*/***********************************************- */
+
+const addProductButton = document.getElementById('add-product');
+const invoiceTableBody = document.querySelector('#invoice-table tbody');
+const totalElement = document.getElementById('total');
+
+addProductButton.addEventListener('click', () => {
+    const idProducto = document.getElementById('id_producto_factura').value;
+    const descripcion = document.getElementById('descripcion_factura').value;
+    const precio = parseFloat(document.getElementById('precio_factura').value);
+    const cantidad = parseInt(document.getElementById('cantidad_factura').value);
+
+    // Validar que todos los campos estén llenos
+    if (idProducto && descripcion && !isNaN(precio) && precio > 0 && !isNaN(cantidad) && cantidad > 0) {
+        const subtotal = precio * cantidad;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${idProducto}</td>
+            <td>${descripcion}</td>
+            <td>${precio.toFixed(2)}</td>
+            <td>${cantidad}</td>
+            <td class="subtotal">${subtotal.toFixed(2)}</td>
+            <td><button class="delete-product">-</button></td>
+        `;
+        
+        invoiceTableBody.appendChild(newRow);
+        
+        updateTotal();
+        
+        // Limpiar campos después de agregar el producto
+        document.getElementById('id_producto_factura').value = '';
+        document.getElementById('descripcion_factura').value = '';
+        document.getElementById('precio_factura').value = '';
+        document.getElementById('cantidad_factura').value = '';
+
+        
+
+    } else {
+        alert('Por favor, complete todos los campos correctamente.');
+    }
+});
+
+
+// Función para cargar los clientes en el select
+async function loadClientes() {
+    try {
+        const response = await fetch('/clientes'); // Asegúrate de que esta ruta sea correcta
+        const clientes = await response.json();
+
+        const clienteSelect = document.getElementById('cliente_factura');
+
+        // Limpiar opciones previas
+        clienteSelect.innerHTML = '<option value="">Seleccione un cliente</option>';
+
+        clientes.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.nit; // Almacena el NIT como valor del option
+            option.textContent = cliente.display; // Utiliza el valor de display
+            option.dataset.display = cliente.display; // Almacena el display en un atributo de datos
+            clienteSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar los clientes:', error);
+    }
+}
+
+// Escuchar el cambio en el select
+document.getElementById('cliente_factura').addEventListener('change', (event) => {
+    const selectedOption = event.target.selectedOptions[0]; // Obtiene la opción seleccionada
+
+    if (selectedOption) {
+        // Dividir el display en partes
+        const displayParts = selectedOption.dataset.display.split(' - ');
+
+        // Asegúrate de que la longitud sea correcta antes de asignar
+        if (displayParts.length === 4) {
+            document.getElementById('cliente_input_factura').value = displayParts[1]; // Nombre
+            document.getElementById('nit_factura').value = displayParts[0]; // NIT
+            document.getElementById('direccion_factura').value = displayParts[3]; // Dirección
+            document.getElementById('telefono_factura').value = displayParts[2]; // Teléfono
+        }
+    }
+});
+
+
+
+// Escuchar el evento de clic en el select
+document.getElementById('cliente_factura').addEventListener('click', loadClientes);
+
+
+//----------------------- Cargamos los datos al select de IDPRODUCTO --------------------------- PRUEBAS ABAJO
+
+// Función para cargar los productos en el select
+document.getElementById('id_producto_factura').addEventListener('click', function() {
+    // Verificar si ya se han cargado las opciones para evitar llamadas repetidas
+    if (this.options.length > 1) return;
+
+    // Hacer la solicitud al servidor para obtener los valores
+    fetch('/productos')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('id_producto_factura'); // Asegúrate de que el id es correcto
+            data.forEach(pastilla => {
+                const option = document.createElement('option');
+                option.value = pastilla.id_pastilla_venta; // ID del producto
+                option.textContent = pastilla.id_pastilla_venta; // Texto del option
+                option.dataset.precio = pastilla.precio_venta; // Almacena el precio en un atributo de datos
+                option.dataset.idPastilla = pastilla.id_pastilla; // Almacena el id_pastilla en un atributo de datos
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar los id_producto_factura:', error);
+        });
+});
+
+// Escuchar el cambio en el select para auto-rellenar el precio y cargar descripciones
+document.getElementById('id_producto_factura').addEventListener('change', function(event) {
+    const selectedOption = event.target.selectedOptions[0]; // Obtener la opción seleccionada
+    const precioInput = document.getElementById('precio_factura'); // Input del precio
+    const descripcionSelect = document.getElementById('descripcion_factura'); // Select de descripción
+
+    // Limpiar descripciones anteriores
+    descripcionSelect.innerHTML = '<option value="">Seleccione una descripción</option>'; // Limpiar opciones anteriores
+
+    if (selectedOption) {
+        const precioVenta = selectedOption.dataset.precio; // Obtener el precio almacenado
+        const idPastilla = selectedOption.dataset.idPastilla; // Obtener el ID de la pastilla
+
+        precioInput.value = precioVenta; // Rellenar el input de precio
+
+        // Obtener las descripciones de la pastilla seleccionada
+        fetch(`/detalles/${idPastilla}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(detalle => {
+                    const option = document.createElement('option');
+                    option.value = detalle.detalle_serie_modelo; // Asigna el detalle como valor del option
+                    option.textContent = detalle.detalle_serie_modelo; // Asigna el detalle como texto visible
+                    descripcionSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar los detalles de la pastilla:', error);
+            });
+    } else {
+        precioInput.value = ''; // Limpiar si no hay opción seleccionada
+    }
+});
+
+//TOTALIZAMOS
+
+document.getElementById('add-product').addEventListener('click', function() {
+    // Obtener valores de los campos
+    const idProducto = document.getElementById('id_producto_factura').value;
+    const descripcion = document.getElementById('descripcion_factura').value;
+    const precio = parseFloat(document.getElementById('precio_factura').value);
+    const cantidad = parseInt(document.getElementById('cantidad_factura').value);
+
+    // Validar que todos los campos estén llenos
+    if (idProducto && descripcion && !isNaN(precio) && !isNaN(cantidad) && cantidad > 0) {
+        // Calcular subtotal
+        const subtotal = precio * cantidad;
+
+        // Crear una nueva fila en la tabla de la factura
+        const tableBody = document.querySelector('#invoice-table tbody');
+        const newRow = document.createElement('tr');
+
+        // Llenar la fila con los datos
+        newRow.innerHTML = `
+            <td>${idProducto}</td>
+            <td>${descripcion}</td>
+            <td>${precio.toFixed(2)}</td>
+            <td>${cantidad}</td>
+            <td>${subtotal.toFixed(2)}</td>
+            <td><button class="remove-product">Eliminar</button></td>
+        `;
+
+        // Agregar la nueva fila al cuerpo de la tabla
+        tableBody.appendChild(newRow);
+
+        // Actualizar el total
+        updateTotal();
+
+        // Limpiar los campos después de agregar el producto
+        document.getElementById('id_producto_factura').value = '';
+        document.getElementById('descripcion_factura').value = '';
+        document.getElementById('precio_factura').value = '';
+        document.getElementById('cantidad_factura').value = '';
+
+        // Agregar evento para eliminar producto
+        const removeButton = newRow.querySelector('.remove-product');
+        removeButton.addEventListener('click', function() {
+            tableBody.removeChild(newRow);
+            updateTotal(); // Actualizar total después de eliminar un producto
+        });
+    } 
+});
+
+// Función para actualizar el total
+function updateTotal() {
+    const tableBody = document.querySelector('#invoice-table tbody');
+    const rows = tableBody.querySelectorAll('tr');
+    let total = 0;
+
+    rows.forEach(row => {
+        const subtotalCell = row.cells[4].textContent; // Obtiene el subtotal de la columna correspondiente
+        total += parseFloat(subtotalCell); // Sumar al total
+    });
+
+    document.getElementById('total').textContent = total.toFixed(2); // Actualizar el total en el HTML
+}
+
+// Función para eliminar un producto de la tabla
+function deleteProduct(event) {
+    if (event.target.classList.contains('delete-product')) {
+        const row = event.target.closest('tr'); // Obtiene la fila del botón presionado
+        row.remove(); // Elimina la fila de la tabla
+        updateTotal(); // Actualiza el total después de eliminar
+    }
+}
+
+// Agregar evento para eliminar productos
+invoiceTableBody.addEventListener('click', deleteProduct);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 
