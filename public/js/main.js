@@ -1331,8 +1331,7 @@ async function loadClientes() {
 
         const clienteSelect = document.getElementById('cliente_factura');
 
-        // Limpiar opciones previas
-        clienteSelect.innerHTML = '<option value="">Seleccione un cliente</option>';
+        
 
         clientes.forEach(cliente => {
             const option = document.createElement('option');
@@ -1413,18 +1412,20 @@ document.getElementById('id_producto_factura').addEventListener('change', functi
 
         // Obtener las descripciones de la pastilla seleccionada
         fetch(`/detalles/${idPastilla}`)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(detalle => {
-                    const option = document.createElement('option');
-                    option.value = detalle.detalle_serie_modelo; // Asigna el detalle como valor del option
-                    option.textContent = detalle.detalle_serie_modelo; // Asigna el detalle como texto visible
-                    descripcionSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error al cargar los detalles de la pastilla:', error);
-            });
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Verifica los datos devueltos
+        data.forEach(detalle => {
+            const option = document.createElement('option');
+            option.value = detalle.detalle_serie_modelo;
+            option.textContent = detalle.detalle_serie_modelo;
+            descripcionSelect.appendChild(option);
+        });
+    })
+    .catch(error => {
+        console.error('Error al cargar los detalles de la pastilla:', error);
+    });
+
     } else {
         precioInput.value = ''; // Limpiar si no hay opción seleccionada
     }
@@ -1506,7 +1507,15 @@ function deleteProduct(event) {
 invoiceTableBody.addEventListener('click', deleteProduct);
 
 
-
+//Bloqueamos Cantidad, para que no permita entradas, mas que del mouse up and down
+document.getElementById('cantidad_factura').addEventListener('keydown', function(e) {
+    // Permitir la tecla "Tab"
+    if (e.key === "Tab") {
+        return;
+    }
+    // Bloquear cualquier otra entrada desde el teclado
+    e.preventDefault();
+});
 
 
 

@@ -577,6 +577,17 @@ app.get('/productos', async (req, res) => {
     }
 });
 
+// Ruta para obtener detalles de la pastilla basada en el ID de la pastilla
+app.get('/detalles/:idPastilla', async (req, res) => {
+    const { idPastilla } = req.params; // Obtener el ID de la pastilla de los parámetros
+    try {
+        const result = await client.query('SELECT detalle_serie_modelo FROM pastilla_detalle_serie_modelo WHERE id_pastilla = $1', [idPastilla]);
+        res.json(result.rows); // Devuelve los detalles en formato JSON
+    } catch (error) {
+        console.error('Error al obtener los detalles de la pastilla:', error);
+        res.status(500).json('Error del servidor');
+    }
+});
 
 
 
