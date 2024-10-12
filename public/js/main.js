@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const navGestionInvetario = document.getElementById('gestion-inventario');
     const GestionDetallePastilla = document.getElementById('Gestión-Detalle-Pastilla');
+    const navFacturas = document.getElementById('nav-Facturas');
+    const facturacionContainer = document.getElementById('facturacion-container');
+
+    
 
     
     const crudContainer = document.getElementById('crud_container');
@@ -53,6 +57,7 @@ vehiculoLink.addEventListener('click', async (e) => {
     crudContainer.classList.add('hidden');
     nav.classList.remove('visible');
     crud_container_consulta_vehiculo.classList.add('hidden');
+    facturacionContainer.classList.add('hidden');
 });
 
 
@@ -216,6 +221,7 @@ async function buscarPastillaPastillita() {
         crudContainer.classList.add('hidden');
         crud_container_consulta_vehiculo.classList.add('hidden');
         nav.classList.remove('visible');
+        facturacionContainer.classList.add('hidden');
     });
     
 
@@ -290,6 +296,7 @@ async function buscarPastillaPastillita() {
         stockContainer.classList.remove('hidden');
         crudContainer.classList.add('hidden');
         crud_container_consulta_vehiculo.classList.add('hidden');
+        facturacionContainer.classList.add('hidden');
         nav.classList.remove('visible');
     });
 
@@ -405,6 +412,8 @@ navGestionInvetario.addEventListener('click', async (b) => {
     stockContainer.classList.add('hidden');
     crudContainer.classList.remove('hidden');
     crud_container_consulta_vehiculo.classList.add('hidden');
+    facturacionContainer.classList.add('hidden');
+
     nav.classList.remove('visible');
 });
 
@@ -886,6 +895,8 @@ GestionDetallePastilla.addEventListener('click', async (e) => {
     stockContainer.classList.add('hidden');
     crudContainer.classList.add('hidden');
     nav.classList.remove('visible');
+    facturacionContainer.classList.add('hidden');
+
     crud_container_consulta_vehiculo.classList.remove('hidden');
 });
 
@@ -1283,90 +1294,130 @@ document.getElementById('btnAddModeloMarcarecord').addEventListener('click', asy
 
 const addProductButton = document.getElementById('add-product');
 const invoiceTableBody = document.querySelector('#invoice-table tbody');
-const totalElement = document.getElementById('total');
+let detalleSerieModelo = ""; // Variable global para almacenar el detalle
 
-addProductButton.addEventListener('click', () => {
+
+// Evento para agregar un producto a la tabla
+addProductButton.addEventListener('click', async function() {
     const idProducto = document.getElementById('id_producto_factura').value;
-    const descripcion = document.getElementById('descripcion_factura').value;
+    const idDescripcion = document.getElementById('id_descripcion').value; // Obtener ID de descripción
     const precio = parseFloat(document.getElementById('precio_factura').value);
     const cantidad = parseInt(document.getElementById('cantidad_factura').value);
 
+
+    const descripcionPastilla = document.getElementById('descripcion_factura').value;
+
+
     // Validar que todos los campos estén llenos
-    if (idProducto && descripcion && !isNaN(precio) && precio > 0 && !isNaN(cantidad) && cantidad > 0) {
+    if (idProducto && idDescripcion && !isNaN(precio) && !isNaN(cantidad) && cantidad > 0) {
+        // Consultar la descripción desde el servidor
+        const response = await fetch(`/detalles/${idDescripcion}`);
+        const detalles = await response.json();
+        const descripcionTexto = detalles[0]?.detalle_serie_modelo || " --- "; // Obtener la descripción
+
+        // Calcular subtotal
         const subtotal = precio * cantidad;
 
+        // Crear una nueva fila en la tabla de la factura
+        const tableBody = document.querySelector('#invoice-table tbody');
         const newRow = document.createElement('tr');
+
+        // Llenar la fila con los datos
         newRow.innerHTML = `
             <td>${idProducto}</td>
-            <td>${descripcion}</td>
+            <td>${idDescripcion}</td> <!-- Muestra el ID de detalle -->
+            <td>${detalleSerieModelo}</td> <!-- Muestra el detalle_serie_modelo -->
             <td>${precio.toFixed(2)}</td>
             <td>${cantidad}</td>
-            <td class="subtotal">${subtotal.toFixed(2)}</td>
-            <td><button class="delete-product">-</button></td>
+            <td>${subtotal.toFixed(2)}</td>
+            <td><button class="remove-product">Eliminar</button></td>
         `;
-        
-        invoiceTableBody.appendChild(newRow);
-        
+
+        // Agregar la nueva fila al cuerpo de la tabla
+        tableBody.appendChild(newRow);
+
+        // Actualizar el total
         updateTotal();
-        
-        // Limpiar campos después de agregar el producto
+
+        // Limpiar los campos después de agregar el producto
         document.getElementById('id_producto_factura').value = '';
-        document.getElementById('descripcion_factura').value = '';
+        document.getElementById('id_descripcion').value = '';
         document.getElementById('precio_factura').value = '';
         document.getElementById('cantidad_factura').value = '';
 
-        
-
+        // Agregar evento para eliminar producto
+        const removeButton = newRow.querySelector('.remove-product');
+        removeButton.addEventListener('click', function() {
+            tableBody.removeChild(newRow);
+            updateTotal(); // Actualizar total después de eliminar un producto
+        });
     } else {
         alert('Por favor, complete todos los campos correctamente.');
     }
 });
 
 
+
+
+// Función para cargar los clientes en el select
+// Función para cargar los clientes en el select
 // Función para cargar los clientes en el select
 async function loadClientes() {
     try {
+        const clienteSelect = document.getElementById('cliente_factura');
+
+        // Verificar si ya hay opciones cargadas (más de una opción)
+        if (clienteSelect.options.length > 1) {
+            return; // Si ya hay más de una opción, no volver a cargar
+        }
+
         const response = await fetch('/clientes'); // Asegúrate de que esta ruta sea correcta
         const clientes = await response.json();
 
-        const clienteSelect = document.getElementById('cliente_factura');
-
-        
+        // Verificar los datos recibidos
+        console.log(clientes); // Agrega esta línea para depurar
 
         clientes.forEach(cliente => {
             const option = document.createElement('option');
-            option.value = cliente.nit; // Almacena el NIT como valor del option
-            option.textContent = cliente.display; // Utiliza el valor de display
-            option.dataset.display = cliente.display; // Almacena el display en un atributo de datos
+            option.value = cliente.id_cliente; // Almacena el id_cliente como valor del option
+            option.textContent = `${cliente.nit} - ${cliente.nombre} - ${cliente.telefono} - ${cliente.direccion} - ${cliente.id_cliente}`;
+            
+            // Agregar los atributos dataset necesarios para el cliente
+            option.dataset.nit = cliente.nit; // Asegúrate de que el NIT se almacene en el dataset
+            option.dataset.nombre = cliente.nombre;
+            option.dataset.telefono = cliente.telefono;
+            option.dataset.direccion = cliente.direccion;
+            option.dataset.id_cliente = cliente.id_cliente;
+        
             clienteSelect.appendChild(option);
         });
+        
+        
     } catch (error) {
         console.error('Error al cargar los clientes:', error);
     }
 }
 
-// Escuchar el cambio en el select
+
+
+
 document.getElementById('cliente_factura').addEventListener('change', (event) => {
     const selectedOption = event.target.selectedOptions[0]; // Obtiene la opción seleccionada
 
     if (selectedOption) {
-        // Dividir el display en partes
-        const displayParts = selectedOption.dataset.display.split(' - ');
-
-        // Asegúrate de que la longitud sea correcta antes de asignar
-        if (displayParts.length === 4) {
-            document.getElementById('cliente_input_factura').value = displayParts[1]; // Nombre
-            document.getElementById('nit_factura').value = displayParts[0]; // NIT
-            document.getElementById('direccion_factura').value = displayParts[3]; // Dirección
-            document.getElementById('telefono_factura').value = displayParts[2]; // Teléfono
-        }
+        // Rellenar los inputs con los valores correspondientes del cliente
+        document.getElementById('nit_factura').value = selectedOption.value; // id_cliente
+        document.getElementById('cliente_input_factura').value = selectedOption.dataset.nombre; // Nombre
+        document.getElementById('telefono_factura').value = selectedOption.dataset.telefono; // Teléfono
+        document.getElementById('direccion_factura').value = selectedOption.dataset.direccion; // Dirección
+        document.getElementById('nit_factura_real').value = selectedOption.dataset.nit; // Rellenar el NIT en nit_factura_real
     }
 });
 
 
-
 // Escuchar el evento de clic en el select
 document.getElementById('cliente_factura').addEventListener('click', loadClientes);
+
 
 
 //----------------------- Cargamos los datos al select de IDPRODUCTO --------------------------- PRUEBAS ABAJO
@@ -1396,10 +1447,12 @@ document.getElementById('id_producto_factura').addEventListener('click', functio
 });
 
 // Escuchar el cambio en el select para auto-rellenar el precio y cargar descripciones
+// Escuchar el cambio en el select para auto-rellenar el precio y cargar descripciones
 document.getElementById('id_producto_factura').addEventListener('change', function(event) {
     const selectedOption = event.target.selectedOptions[0]; // Obtener la opción seleccionada
     const precioInput = document.getElementById('precio_factura'); // Input del precio
     const descripcionSelect = document.getElementById('descripcion_factura'); // Select de descripción
+    const idDescripcionInput = document.getElementById('id_descripcion'); // Input donde se guardará el id_detalle
 
     // Limpiar descripciones anteriores
     descripcionSelect.innerHTML = '<option value="">Seleccione una descripción</option>'; // Limpiar opciones anteriores
@@ -1412,73 +1465,53 @@ document.getElementById('id_producto_factura').addEventListener('change', functi
 
         // Obtener las descripciones de la pastilla seleccionada
         fetch(`/detalles/${idPastilla}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Verifica los datos devueltos
-        data.forEach(detalle => {
-            const option = document.createElement('option');
-            option.value = detalle.detalle_serie_modelo;
-            option.textContent = detalle.detalle_serie_modelo;
-            descripcionSelect.appendChild(option);
-        });
-    })
-    .catch(error => {
-        console.error('Error al cargar los detalles de la pastilla:', error);
-    });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Verifica los datos devueltos
+                data.forEach(detalle => {
+                    const option = document.createElement('option');
+                    
+                    // Mostrar el id_detalle junto con el detalle_serie_modelo
+                    option.value = detalle.id_detalle; // Asignar el id_detalle como valor del option
+                    option.textContent = `${detalle.id_detalle} - ${detalle.detalle_serie_modelo}`; // Mostrar "id_detalle - detalle_serie_modelo"
+                    descripcionSelect.appendChild(option);
+                });
+
+                // Escuchar el cambio en el select de descripción para actualizar el input
+                // Escuchar el cambio en el select de descripción para actualizar el input
+
+                descripcionSelect.addEventListener('change', function() {
+                    const selectedDescripcionOption = descripcionSelect.selectedOptions[0]; // Obtener la opción seleccionada de la descripción
+                    if (selectedDescripcionOption) {
+                        idDescripcionInput.value = selectedDescripcionOption.value; // Rellenar el input con el id_detalle
+                        
+                        // Obtener el texto completo
+                        const descripcionPastilla = selectedDescripcionOption.text; // Obtiene el texto completo
+                        
+                        // Extraer detalle_serie_modelo
+                        detalleSerieModelo = descripcionPastilla.split(' - ')[1]; // Guardamos el detalle en una variable global
+                        console.log(detalleSerieModelo); // Muestra el detalle_serie_modelo en la consola
+                    } else {
+                        idDescripcionInput.value = ''; // Limpiar el input si no hay opción seleccionada
+                    }
+                });
+                
+
+            })
+            .catch(error => {
+                console.error('Error al cargar los detalles de la pastilla:', error);
+            });
 
     } else {
         precioInput.value = ''; // Limpiar si no hay opción seleccionada
     }
 });
 
+
 //TOTALIZAMOS
 
-document.getElementById('add-product').addEventListener('click', function() {
-    // Obtener valores de los campos
-    const idProducto = document.getElementById('id_producto_factura').value;
-    const descripcion = document.getElementById('descripcion_factura').value;
-    const precio = parseFloat(document.getElementById('precio_factura').value);
-    const cantidad = parseInt(document.getElementById('cantidad_factura').value);
+//TOTALIZAMOS
 
-    // Validar que todos los campos estén llenos
-    if (idProducto && descripcion && !isNaN(precio) && !isNaN(cantidad) && cantidad > 0) {
-        // Calcular subtotal
-        const subtotal = precio * cantidad;
-
-        // Crear una nueva fila en la tabla de la factura
-        const tableBody = document.querySelector('#invoice-table tbody');
-        const newRow = document.createElement('tr');
-
-        // Llenar la fila con los datos
-        newRow.innerHTML = `
-            <td>${idProducto}</td>
-            <td>${descripcion}</td>
-            <td>${precio.toFixed(2)}</td>
-            <td>${cantidad}</td>
-            <td>${subtotal.toFixed(2)}</td>
-            <td><button class="remove-product">Eliminar</button></td>
-        `;
-
-        // Agregar la nueva fila al cuerpo de la tabla
-        tableBody.appendChild(newRow);
-
-        // Actualizar el total
-        updateTotal();
-
-        // Limpiar los campos después de agregar el producto
-        document.getElementById('id_producto_factura').value = '';
-        document.getElementById('descripcion_factura').value = '';
-        document.getElementById('precio_factura').value = '';
-        document.getElementById('cantidad_factura').value = '';
-
-        // Agregar evento para eliminar producto
-        const removeButton = newRow.querySelector('.remove-product');
-        removeButton.addEventListener('click', function() {
-            tableBody.removeChild(newRow);
-            updateTotal(); // Actualizar total después de eliminar un producto
-        });
-    } 
-});
 
 // Función para actualizar el total
 function updateTotal() {
@@ -1487,7 +1520,7 @@ function updateTotal() {
     let total = 0;
 
     rows.forEach(row => {
-        const subtotalCell = row.cells[4].textContent; // Obtiene el subtotal de la columna correspondiente
+        const subtotalCell = row.cells[5].textContent; // Obtiene el subtotal de la columna correspondiente
         total += parseFloat(subtotalCell); // Sumar al total
     });
 
@@ -1538,6 +1571,284 @@ cantidadInput2.addEventListener('paste', function(e) {
         e.preventDefault(); // Bloquear si no es un número entero
     }
 });
+
+
+//------------ MANDAMOS PARAMETROS AL INSERT INTO DE FACTURA
+
+async function crearFactura() {
+    const clienteSelect = document.getElementById('cliente_factura');
+    const totalElement = document.getElementById('total');
+    const fechaInput = document.getElementById('fechaFactura');
+    const id_cliente = clienteSelect.value;
+    const total_factura = parseFloat(totalElement.textContent).toFixed(2);
+    const fecha = new Date(fechaInput.value);
+
+    // Validación de la tabla de productos
+    const invoiceTableBody = document.querySelector('#invoice-table tbody');
+    if (invoiceTableBody.rows.length === 0) {
+        alert('La tabla de productos está vacía. Agrega al menos un producto antes de crear la factura.');
+        return;
+    }
+
+    // Validación de entrada de la fecha y total
+    if (!fechaInput.value) {
+        alert('Por favor, selecciona una fecha.');
+        return;
+    }
+    if (isNaN(total_factura) || total_factura <= 0) {
+        alert('El total debe ser un número válido y mayor que 0.');
+        return;
+    }
+
+    // Formatear la fecha
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    const fecha_factura = `${dia}/${mes}/${año}`;
+
+    try {
+        // Crear factura en la base de datos
+        const response = await fetch('/factura', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id_cliente, fecha_factura,total_factura }),
+        });
+
+        if (response.ok) {
+            const newFactura = await response.json();
+            const id_factura = newFactura.id_factura; // Obtiene el id_factura generado
+            console.log('Factura creada con éxito:', newFactura);
+
+            // Ahora insertar los detalles de la factura
+            await insertarDetalleFactura(id_factura); // Llamamos a la función para insertar los detalles
+        } else {
+            const errorData = await response.json();
+            console.error('Error al crear la factura:', errorData.message);
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
+}
+
+document.getElementById('btnGuardarFactura').addEventListener('click', crearFactura);
+
+
+async function insertarDetalleFactura(id_factura) {
+    const invoiceTableBody = document.querySelector('#invoice-table tbody');
+    const detalles = [];
+
+    // Recorremos las filas de la tabla de productos
+    for (let i = 0; i < invoiceTableBody.rows.length; i++) {
+        const row = invoiceTableBody.rows[i];
+
+        const id_pastilla_venta = row.cells[0].textContent; // ID Producto
+        const id_detalle = row.cells[1].textContent; // Id Descripción
+        let precio = parseFloat(row.cells[3].textContent); // Precio
+        const cantidad = parseInt(row.cells[4].textContent); // Cantidad
+        let subTotal = parseFloat(row.cells[5].textContent); // Subtotal
+
+
+        // Validación para asegurarse de que precio y subtotal no excedan los límites de DECIMAL(6,2)
+        if (precio >= 10000 || subTotal >= 10000) {
+            alert(`Precio o Subtotal exceden el límite permitido: Precio=${precio}, Subtotal=${subTotal}`);
+            alert('Error: Precio o Subtotal exceden el límite permitido.');
+            return;         
+        }
+
+        // Redondear precio y subTotal a dos decimales
+        precio = precio.toFixed(2);
+        subTotal = subTotal.toFixed(2);
+
+        // Crear un objeto detalle para cada fila
+        detalles.push({
+            id_factura,
+            id_pastilla_venta,
+            id_detalle,
+            precio,
+            cantidad,
+            subTotal,
+        });
+    }
+
+    
+
+    // Enviamos los detalles al servidor
+    try {
+        const response = await fetch('/detalle_factura', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(detalles),
+        });
+
+        if (response.ok) {
+            alert('Detalles de factura creados con éxito.');
+        } else {
+            const errorData = await response.json();
+            alert('Error al crear los detalles de la factura:', errorData.message);
+        }
+    } catch (error) {
+        alert('Error en la solicitud:', error);
+    }
+}
+//Ocultamos el div de facturacion
+navFacturas.addEventListener('click', async (b) => {
+    b.preventDefault();
+    consultaContainer.classList.add('hidden');
+    vehiculoContainer.classList.add('hidden');
+    stockContainer.classList.add('hidden');
+    crudContainer.classList.add('hidden');
+    crud_container_consulta_vehiculo.classList.add('hidden');
+    facturacionContainer.classList.remove('hidden');
+
+
+    
+
+    nav.classList.remove('visible');
+});
+
+//imprimir el div que representa el cuerpo de la factura
+
+
+// Función para imprimir la factura
+// Función para imprimir la factura
+function imprimirFactura() {
+    const ventanaImpresion = window.open('', '', 'height=600,width=800');
+
+    // Obtener los valores de los inputs
+    const clienteInput = document.getElementById('cliente_input_factura').value;
+    const nitInput = document.getElementById('nit_factura_real').value;
+    const direccionInput = document.getElementById('direccion_factura').value;
+    const telefonoInput = document.getElementById('telefono_factura').value;
+    const fechaFactura = document.getElementById('fechaFactura').value; // Obtener la fecha
+    const total = document.getElementById('total').textContent; // Obtener el total
+
+    // Obtener los datos de la tabla de productos
+    let productosHTML = `
+        <table class="table table-bordered mt-4">
+            <thead class="thead-light">
+                <tr>
+                    <th>ID Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    // Iterar sobre las filas de la tabla y construir el HTML
+    const tableRows = document.querySelectorAll('#invoice-table tbody tr');
+    tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        productosHTML += `
+            <tr>
+                <td>${cells[0].textContent}</td>
+                <td>${cells[2].textContent}</td>
+                <td>${cells[3].textContent}</td>
+                <td>${cells[4].textContent}</td>
+                <td>${cells[5].textContent}</td>
+            </tr>
+        `;
+    });
+
+    productosHTML += `
+            </tbody>
+        </table>
+    `;
+
+    // Crear el contenido HTML con los valores actuales
+    const clienteHTML = `
+        <div class="invoice-header text-center">
+            <h1 class="display-4">Factura</h1>
+            <p><strong>Cliente:</strong> ${clienteInput}</p>
+            <p><strong>NIT:</strong> ${nitInput}</p>
+            <p><strong>Dirección:</strong> ${direccionInput}</p>
+            <p><strong>Teléfono:</strong> ${telefonoInput}</p>
+            <p><strong>Fecha:</strong> ${fechaFactura}</p>
+            <h3 class="text-success"><strong>Total: Q${total}</strong></h3> <!-- Agregando el total -->
+        </div>
+        <hr />
+        ${productosHTML} <!-- Insertando la tabla de productos -->
+        <div class="footer text-center">
+            <p class="font-italic">Gracias por su compra!</p>
+        </div>
+    `;
+
+    ventanaImpresion.document.write(`
+        <html>
+            <head>
+                <title>Factura</title>
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                        padding: 0;
+                        background-color: #f8f9fa;
+                    }
+                    .invoice-header {
+                        border: 1px solid #ccc;
+                        padding: 20px;
+                        border-radius: 5px;
+                        background-color: #fff;
+                    }
+                    h1 {
+                        text-align: center;
+                        color: #007bff; /* Color del título */
+                    }
+                    p {
+                        font-size: 14px;
+                        margin: 5px 0;
+                    }
+                    hr {
+                        margin: 20px 0;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    .footer {
+                        margin-top: 20px;
+                        text-align: center;
+                        font-size: 12px;
+                        color: #666;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    ${clienteHTML}
+                </div>
+            </body>
+        </html>
+    `);
+
+    ventanaImpresion.document.close();
+    ventanaImpresion.print();
+}
+
+// Agregar el evento de clic al botón una vez que el DOM esté completamente cargado
+const btnImprimirFactura = document.getElementById('btnImprimirFactura');
+
+if (btnImprimirFactura) {
+    btnImprimirFactura.addEventListener('click', imprimirFactura);
+}
+
+
+
+
+
+
 
 
 

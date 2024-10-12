@@ -766,3 +766,9 @@ h2 {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+
+        #fechaFactura {
+            height: calc(2.25rem + 2px); /* Altura consistente con el botón */
+            line-height: 2.25rem; /* Alineación vertical del texto */
+        }

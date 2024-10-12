@@ -546,13 +546,20 @@ app.post('/insertar-detalle-serie-modelo', async (req, res) => {
 // Ruta para obtener todos los clientes
 app.get('/clientes', async (req, res) => {
     try {
-        const query = 'SELECT nit, nombre, telefono, direccion FROM clientes';
+        const query = 'SELECT nit, nombre, telefono, direccion, id_cliente FROM clientes';
         const result = await client.query(query);
+
+        // Verificar los resultados
+        console.log(result.rows); // Agrega esta línea para depurar
 
         // Formatear los resultados en el formato requerido
         const clientes = result.rows.map(cliente => ({
-            display: `${cliente.nit} - ${cliente.nombre} - ${cliente.telefono} - ${cliente.direccion}`,
-            nit: cliente.nit
+            display: `${cliente.nit} - ${cliente.nombre} - ${cliente.telefono} - ${cliente.direccion} - ${cliente.id_cliente}`,
+            nit: cliente.nit,
+            nombre: cliente.nombre, // Asegúrate de que se incluya el nombre
+            telefono: cliente.telefono, // Asegúrate de que se incluya el teléfono
+            direccion: cliente.direccion, // Asegúrate de que se incluya la dirección
+            id_cliente: cliente.id_cliente // Asegúrate de que se incluya el id_cliente
         }));
 
         res.json(clientes);
@@ -561,6 +568,7 @@ app.get('/clientes', async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los clientes.' });
     }
 });
+
 
 
 
@@ -581,13 +589,56 @@ app.get('/productos', async (req, res) => {
 app.get('/detalles/:idPastilla', async (req, res) => {
     const { idPastilla } = req.params; // Obtener el ID de la pastilla de los parámetros
     try {
-        const result = await client.query('SELECT detalle_serie_modelo FROM pastilla_detalle_serie_modelo WHERE id_pastilla = $1', [idPastilla]);
+        const result = await client.query('SELECT detalle_serie_modelo, id_detalle FROM pastilla_detalle_serie_modelo WHERE id_pastilla = $1', [idPastilla]);
         res.json(result.rows); // Devuelve los detalles en formato JSON
     } catch (error) {
         console.error('Error al obtener los detalles de la pastilla:', error);
         res.status(500).json('Error del servidor');
     }
 });
+
+//---------------------------------------------------------------- mandamos DATOS A FACTURA
+
+app.post('/factura', async (req, res) => {
+    const { id_cliente, fecha_factura, total_factura } = req.body;
+
+    try {
+        const query = 'INSERT INTO factura (id_cliente, fecha_factura, total_factura) VALUES ($1, $2, $3) RETURNING *';
+        const values = [id_cliente, fecha_factura, total_factura];
+
+        const result = await client.query(query, values);
+        const newFactura = result.rows[0];
+        res.status(201).json(newFactura);
+    } catch (error) {
+        console.error('Error al insertar la factura:', error);
+        res.status(500).json({ message: 'Error al insertar la factura.' });
+    }
+});
+
+app.post('/detalle_factura', async (req, res) => {
+    const detalles = req.body; // Recibe un array de detalles
+
+    try {
+        // Crear la consulta de inserción para cada detalle
+        for (const detalle of detalles) {
+            const { id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal } = detalle;
+
+            const query = `
+                INSERT INTO detalle_factura (id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal)
+                VALUES ($1, $2, $3, $4, $5, $6)
+            `;
+
+            await client.query(query, [id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal]);
+        }
+
+        res.status(200).json({ message: 'Detalles insertados correctamente.' });
+    } catch (error) {
+        console.error('Error al insertar los detalles de la factura:', error);
+        res.status(500).json({ message: 'Error al insertar los detalles de la factura.' });
+    }
+});
+
+
 
 
 
