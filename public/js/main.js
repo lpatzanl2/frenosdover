@@ -1366,11 +1366,8 @@ async function loadClientes() {
     try {
         const clienteSelect = document.getElementById('cliente_factura');
 
-        // Verificar si ya hay opciones cargadas (más de una opción)
-        if (clienteSelect.options.length > 1) {
-            return; // Si ya hay más de una opción, no volver a cargar
-        }
-
+        clienteSelect.innerHTML = '<option value="" disabled selected>Seleccione un cliente</option>';
+        
         const response = await fetch('/clientes'); // Asegúrate de que esta ruta sea correcta
         const clientes = await response.json();
 
@@ -1576,10 +1573,10 @@ cantidadInput2.addEventListener('paste', function(e) {
 //------------ MANDAMOS PARAMETROS AL INSERT INTO DE FACTURA
 
 async function crearFactura() {
-    const clienteSelect = document.getElementById('cliente_factura');
+    const idClienteInput = document.getElementById('nit_factura'); // Obtén el input por su id
     const totalElement = document.getElementById('total');
     const fechaInput = document.getElementById('fechaFactura');
-    const id_cliente = clienteSelect.value;
+    const id_cliente = idClienteInput.value.trim(); // Obtén el valor del input y elimina espacios
     const total_factura = parseFloat(totalElement.textContent).toFixed(2);
     const fecha = new Date(fechaInput.value);
 
@@ -1599,6 +1596,10 @@ async function crearFactura() {
         alert('El total debe ser un número válido y mayor que 0.');
         return;
     }
+    if (!id_cliente) { // Asegúrate de que se haya proporcionado un ID de cliente
+        alert('Por favor, ingresa un ID de cliente.');
+        return;
+    }
 
     // Formatear la fecha
     const dia = String(fecha.getDate()).padStart(2, '0');
@@ -1613,13 +1614,14 @@ async function crearFactura() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id_cliente, fecha_factura,total_factura }),
+            body: JSON.stringify({ id_cliente, fecha_factura, total_factura }),
         });
 
         if (response.ok) {
             const newFactura = await response.json();
             const id_factura = newFactura.id_factura; // Obtiene el id_factura generado
             console.log('Factura creada con éxito:', newFactura);
+            limpiarInputs();
 
             // Ahora insertar los detalles de la factura
             await insertarDetalleFactura(id_factura); // Llamamos a la función para insertar los detalles
@@ -1631,6 +1633,7 @@ async function crearFactura() {
         console.error('Error en la solicitud:', error);
     }
 }
+
 
 document.getElementById('btnGuardarFactura').addEventListener('click', crearFactura);
 
@@ -1850,6 +1853,90 @@ if (btnImprimirFactura) {
 
 
 
+//Llamamos la boton agregar clientes para que meustre el modal
+$('#btnAgregarCliente').on('click', function() {
+    $('#addClienteModal').modal('show');
+});
+
+document.getElementById('btnAddCliente').addEventListener('click', async (e) => {
+
+    e.preventDefault(); // Evitar el comportamiento por defecto del botón
+
+    // Obtener los valores de los inputs
+    const nombre = document.getElementById('nombreCliente').value;
+    const direccion = document.getElementById('direccionCliente').value;
+    const telefono = document.getElementById('telefonoCliente').value;
+    const nit = document.getElementById('nitCliente').value;
+
+    // Validar que los campos no estén vacíos
+    if (!nombre || !direccion || !telefono || !nit) {
+        alert("Por favor, rellena todos los campos.");
+        return;
+    }
+
+    // Crear el objeto de cliente
+    const nuevoCliente = {
+        nombre: nombre,
+        direccion: direccion,
+        telefono: telefono,
+        nit: nit
+    };
+
+    try {
+        // Realizar la solicitud POST para ingresar un nuevo cliente
+        const response = await fetch('/ingresarClienteNuevo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(nuevoCliente)
+        });
+
+        // Verificar si la solicitud fue exitosa
+        if (response.ok) {
+            alert('Cliente agregado exitosamente.');
+            await loadClientes(); 
+            $('#addClienteModal').modal('hide');
+            // Limpiar los campos del formulario
+            document.getElementById('nombreCliente').value = '';
+            document.getElementById('direccionCliente').value = '';
+            document.getElementById('telefonoCliente').value = '';
+            document.getElementById('nitCliente').value = '';
+
+            // Recargar los clientes en el select
+        } else {
+            alert('Error al agregar el cliente.');
+        }
+    } catch (error) {
+        console.error('Error al agregar el cliente:', error);
+        alert('Hubo un error al intentar agregar el cliente.');
+    }
+});
+
+function limpiarInputs() {
+    // Selecciona el contenedor de facturación
+    const facturacionContainer = document.getElementById('facturacion-container');
+
+    // Obtén todos los elementos de entrada dentro del contenedor
+    const inputs = facturacionContainer.querySelectorAll('.FacturaClassInputs');
+
+    // Recorre cada input y lo limpia
+    inputs.forEach(input => {
+        if (input.type === 'select-one') {
+            input.selectedIndex = 0; // Para select, restablece a la opción predeterminada
+        } else {
+            input.value = ''; // Limpia el valor de los demás inputs
+        }
+    });
+    const tableBody = document.querySelector('#invoice-table tbody');
+    while (tableBody.firstChild) {
+        tableBody.removeChild(tableBody.firstChild);
+    }
+
+    // Si también deseas limpiar el total
+    const totalElement = document.getElementById('total');
+    totalElement.textContent = '0.00'; // Restablece el total a 0.00
+}
 
 
 
@@ -1889,5 +1976,3 @@ if (btnImprimirFactura) {
 
 
 });
-
-

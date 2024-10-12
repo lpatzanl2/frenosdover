@@ -640,6 +640,33 @@ app.post('/detalle_factura', async (req, res) => {
 
 
 
+//INSERT INTO a CLIENTES
+app.post('/ingresarClienteNuevo', async (req, res) => {
+    const { nombre, direccion, telefono, nit } = req.body;
+
+    // Verificar que todos los datos estén presentes
+    if (!nombre || !nit || !telefono || !direccion) {
+        return res.status(400).json({ message: 'Faltan datos del cliente.' });
+    }
+
+    try {
+        // Consulta SQL para insertar el nuevo cliente
+        const query = 'INSERT INTO clientes (nombre, direccion, telefono, nit) VALUES ($1, $2, $3, $4) RETURNING *';
+        const values = [nombre, direccion, telefono, nit];
+
+        const result = await client.query(query, values);
+        const newCliente = result.rows[0];
+
+        // Responder con el cliente recién agregado
+        res.status(201).json(newCliente);
+    } catch (error) {
+        console.error('Error al insertar el cliente:', error);
+        res.status(500).json({ message: 'Error al insertar el cliente.' });
+    }
+});
+
+
+
 
 
 

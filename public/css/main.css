@@ -772,3 +772,26 @@ h2 {
             height: calc(2.25rem + 2px); /* Altura consistente con el botón */
             line-height: 2.25rem; /* Alineación vertical del texto */
         }
+
+
+    /* BOTONES */
+
+    .btn-13 {
+    background-color: #28a745; /* Verde Bootstrap */
+    color: white; /* Texto blanco */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Efecto de transición suave */
+}
+
+.btn-13:hover {
+    background-color: #218838; /* Verde más oscuro al hacer hover */
+    color: white;
+}
+
+.me-2 {
+    margin-right: 0.5rem; /* Espacio a la derecha */
+}

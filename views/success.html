@@ -582,13 +582,16 @@
         <div class="d-flex align-items-center">
             <label for="fechaFactura" class="me-2">Fecha de la Factura:</label>
             <input type="date" id="fechaFactura" class="form-control" style="width: auto; flex: 0 0 auto;" />
-            <br>
+        </br>
         </div>
         
         <div class="col-md-6 invoice-header mb-4">
             <h2>Datos del Cliente</h2>
             <div class="form-group">
                 <label for="cliente_factura">Seleccione un cliente:</label>
+                <button id="btnAgregarCliente" class="btn btn-13 me-2">Agregar Cliente</button>
+            </br>    
+            </br>
                 <select class="form-control FacturaClassInputs" id="cliente_factura" required>
                     <option value="">Seleccione un cliente</option>
                     <!-- Los clientes se cargarán aquí dinámicamente -->
@@ -599,7 +602,8 @@
                 </div>
             </div>
             
-            <div class="form-group">
+            <div class="form-group"> 
+               
                 <input type="text" class="form-control FacturaClassInputs hidden" id="nit_factura" required>
                 <label for="nit_factura">NIT Cliente:</label>
                 <input type="text" class="form-control FacturaClassInputs" id="nit_factura_real" required>
@@ -618,6 +622,8 @@
             <h2>Agregar Producto</h2>
 
             <div class="form-group">
+            </br>
+        </br>
                 <label for="id_producto_factura">ID Producto:</label>
                 <select class="form-control FacturaClassInputs" id="id_producto_factura" required>
                     <option value="">Seleccione un producto</option>
@@ -668,7 +674,51 @@
     <button id="btnGuardarFactura" class="btn btn-13 me-2">Guardar Factura</button>
     <button id="btnImprimirFactura" class="btn btn-13 me-2">Imprimir Factura</button>
 </div>
-    
+
+
+<!--  MODAL PARA AGREGAR CLIENTE NUEVO-->
+
+<div id="addClienteModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">						
+                    <h4 class="modal-title">AGREGAR NUEVO CLIENTE</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para ingresar datos del cliente -->
+                    <div class="form-group">
+                        <label for="nombreCliente">Nombre</label>
+                        <input type="text" class="form-control" id="nombreCliente" name="nombreCliente" placeholder="Nombre del Cliente" required maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="direccionCliente">Dirección</label>
+                        <input type="text" class="form-control" id="direccionCliente" name="direccionCliente" placeholder="Dirección del Cliente" maxlength="255">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefonoCliente">Teléfono</label>
+                        <input type="text" class="form-control" id="telefonoCliente" name="telefonoCliente" placeholder="Teléfono del Cliente" maxlength="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nitCliente">NIT</label>
+                        <input type="text" class="form-control" id="nitCliente" name="nitCliente" placeholder="NIT del Cliente" required maxlength="20">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" id="btnAddCliente" class="btn btn-success" value="Agregar Cliente">
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
     
  
       
