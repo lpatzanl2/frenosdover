@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/main.css">
 
     <style>
+
         .hidden {
             display: none;
         }
@@ -71,31 +72,87 @@
         outline-offset: 5px;
         background-color: #fff
         }
+
+
         
-        
+
+
+
+#titulo-principal {
+    color: rgb(0, 0, 0); /* Texto en blanco */
+    font-weight: bold; /* Letras en negrita */
+    padding: 20px;
+    text-align: center;
+    
+    
+    font-size: 35px;
+}
+
+
+#divPrincipal {
+    margin: 40px; /* Aplica un margen de 10px a todos los lados del div */
+    margin-top: 110px; /* Añade un margen superior para que esté debajo del header */
+
+    background: white;
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para el div */
+    /* Puedes agregar más estilos aquí según sea necesario */
+    min-height: calc(100vh - 20px); /* Altura mínima del 100% de la ventana menos el margen */
+    box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño */
+    
+}
+
+
+
+
 
     </style>
 </head>
 <body>
 
     <header>
-        <h1>FRENOS DOVER</h1>
+       
         <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
+        <h1 id="titulo-principal">F R E N O S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D O V E R</h1>
         <nav class="nav" id="nav">
             <button class="cerrar-menu" id="cerrar"><i class="bi bi-x"></i></button>
+            <br>
+            <br>
             <ul class="nav-list">
-                <li><a href="#" id="consulta-pastilla">Consulta de pastilla</a></li>
-                <li><a href="#" id="consulta-vehiculo">Consulta Por Vehiculo</a></li>
-                <li><a href="#" id="consulta-stock">Consulta Inventario</a></li>
-                <li><a href="#" id="gestion-inventario">Gestión del inventario</a></li>
-                <li><a href="#" id="Gestión-Detalle-Pastilla">Gestión Detalle Pastilla</a></li>
-                <li><a href="#" id="nav-Facturas">Facturas</a></li>
+            <!-- Agregar un ícono como encabezado dentro de la barra de navegación -->
+            <div class="nav-header">
+                <i class="bi bi-tools"></i> <!-- Ícono de herramientas como ejemplo -->
+                <h2 class="nav-title">Frenos Dover</h2>
+            </div>
+            
+            
+            <br>
+            
+            
+                <li><i class="bi bi-search"></i><a href="#" id="consulta-pastilla">Dimensiones Pastilla</a></li>
+                <li><i class="bi bi-car-front"></i><a href="#" id="consulta-vehiculo">Consulta Vehículos</a></li>
+                <li><i class="bi bi-cash-coin"></i><a href="#" id="consulta-stock">Consulta Precios</a></li>
+                <li><i class="bi bi-file-earmark-pdf"></i><a href="#" id="nav-Facturas">Registro Ventas/Cotizaciones</a></li>
+                <li>
+                    <i class="bi bi-database-add"></i><a href="#" id="gestiones-toggle">Administrar Inventario</a>
+
+                    <ul id="submenu-gestiones" class="nav-list hidden">
+                        <li><a href="#" id="gestion-inventario">Gestión del inventario</a></li>
+                        <li><a href="#" id="Gestion-Detalle-Pastilla">Gestión Detalle Pastilla</a></li>
+                    </ul>
+                    
+                </li>
             </ul>
         </nav>
+        
     </header>
+    
+    
+
+    <div id="divPrincipal">
 
 
-    <div id="consulta-container" class="hidden">
+    <div id="consulta-container" class="hidden custom-padding-margin">
         <br/>
             <div class="table-title">
                 <div class="row">
@@ -105,6 +162,7 @@
 					
                 </div>
             </div>
+            <br>
         <label for="codigo-pastilla">Ingrese el código de la pastilla:</label>
         <input type="text" id="codigo-pastilla" name="codigo-pastilla">
         <button id="buscar">Buscar</button>
@@ -125,7 +183,7 @@
 
     
 
-    <div id="vehiculo-container" class="hidden" >
+    <div id="vehiculo-container" class="hidden custom-padding-margin" >
         <br/>
             <div class="table-title">
                 <div class="row">
@@ -163,7 +221,7 @@
 
 
 
-    <div id="stock_container" class="hidden">
+    <div id="stock_container" class="hidden custom-padding-margin">
             <br>
             <div class="table-title">
                 <div class="row">
@@ -174,9 +232,7 @@
                 </div>
             </div>
 
-        <button id="exportar-stock" class="custom-btn btn-11">Exportar Stock a Excel</button>
-        <br/>   
-        <br/>   
+        
         <br/>   
         <div class="input-container">
             <label for="stok-label">Ingrese el modelo:</label>
@@ -227,8 +283,8 @@
     <!--------------------------------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------------------------------->
 
-    <div id="crud_container" class="hidden">
-        <div class="table-wrapper">
+    <div id="crud_container" class="hidden custom-padding-margin">
+        <div >
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-6">
@@ -240,6 +296,7 @@
 						<a href="#addPastillaModal" class="btn btn-success" data-toggle="modal" id="botonAgregarNuevaPastilla"><i class="material-icons">&#xE147;</i> <span>Agregar Nueva Pastilla
                         </span></a>
 						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Borrar</span></a>	
+                        <button id="exportar-stock" class="custom-btn btn-11">Exportar Stock a Excel</button>
                         
 					</div>
                 </div>
@@ -454,7 +511,7 @@
     <!--------------------------------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------------------------------->
 
-<div id="crud_container_consulta_vehiculo" class="hidden">
+<div id="crud_container_consulta_vehiculo" class="hidden custom-padding-margin">
         
     <br/>
     <div class="table-title">
@@ -575,7 +632,7 @@
 
 <!---- ---------------------------------------------------------------------------------Facturas-->
 <!---- -------------------------------F A T U R A S -->
-<div id="facturacion-container" class="container mt-5 invoice-container hidden">
+<div id="facturacion-container" class="hidden container mt-5 invoice-container ">
     <h1 class="text-center mb-4">Ingreso de Factura</h1>
     
     <div class="row">
@@ -670,7 +727,7 @@
         </tbody>
     </table>
     
-    <h2>Total: <span id="total">0.00</span></h2>
+    <h2 id="totalito">Total: <span id="total">0.00</span></h2>
     <button id="btnGuardarFactura" class="btn btn-13 me-2">Guardar Factura</button>
     <button id="btnImprimirFactura" class="btn btn-13 me-2">Imprimir Factura</button>
 </div>
@@ -719,7 +776,7 @@
     </div>
 </div>
 
-    
+</div>  
  
       
 

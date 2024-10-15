@@ -5,28 +5,18 @@
     font-family: sans-serif;
 }
 
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2rem;
-    background-color: #ececec;
-}
+
+
 
 .logo {
     max-width: 5rem;
 }
 
-.nav-list {
-    list-style-type: none;
-    display: flex;
-    gap: 1rem;
-}
 
-.nav-list li a {
-    text-decoration: none;
-    color: #1c1c1c;
-}
+
+
+
+
 
 .abrir-menu,
 .cerrar-menu {
@@ -35,91 +25,133 @@ header {
     font-size: 1.25rem;
     background-color: rgb(255, 255, 255);
     cursor: pointer;
+    
+}
+.cerrar-menu,
+.abrir-menu {
+    display: flex; /* Permite centrar el ícono */
+    align-items: center; /* Centra el ícono verticalmente */
+    justify-content: center; /* Centra el ícono horizontalmente */
+    width: 60px; /* Ajusta el ancho del botón */
+    height: 60px; /* Ajusta la altura del botón */
+    border: 0;
+    background-color:  rgba(82, 78, 78, 0.8); /* Color de fondo */
+    cursor: pointer;
+    border-radius: 50%; /* Hace el botón completamente redondo */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra para efecto de profundidad */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+    
+}
+.abrir-menu:hover {
+    background-color: rgba(247, 247, 247, 0.8); /* Color de fondo al pasar el ratón */
 }
 
-.abrir-menu {
-    color: #1c1c1c;
+.cerrar-menu:hover {
+    background-color: #333547; /* Color de fondo al pasar el ratón */
 }
 
 .cerrar-menu {
     color: black;
+    background-color:  rgba(247, 247, 247, 0.8);
+
+}
+
+header {
+    background: linear-gradient(to right, #333547, rgba(255, 255, 255, 0.8)); /* Degradado de gris claro a blanco con opacidad */
+    color: white; /* Texto blanco para contraste */
+    position: fixed; /* Fija el header en la parte superior */
+    top: 0; /* Asegura que el header esté en la parte superior */
+    left: 0; /* Asegura que el header esté alineado a la izquierda */
+    right: 0; /* Asegura que el header esté alineado a la derecha */
+    height: 102px; /* Ajusta este valor según lo pequeño que quieras el header */
+    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
+    justify-content: space-between;
+    display: flex;
+    align-items: center;          
 }
 
 .nav {
-    opacity: 0;
-    visibility: hidden;
+    background-color: #333547; /* Color de fondo negro */
+    opacity: 1; /* Asegura que la nav no sea transparente */
+    visibility: hidden; /* Se mantiene oculta inicialmente */
     display: flex;
     flex-direction: column;
-    align-items: end;
+    align-items: flex-start; /* Cambiado a flex-start para alinear a la izquierda */
     gap: 1rem;
-    position: absolute;
+    position: fixed; /* Fija la nav en la parte superior */
     top: 0;
-    right: 0;
+    left: 0; /* Cambiado para alinear la nav a la izquierda */
     bottom: 0;
-    background-color: #1c1c1c;
     padding: 2rem;
+    padding-left: 1rem; /* Añadir padding a la izquierda para separación */
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
-    z-index: 1000; /* Asegúrate de que este número sea mayor */
+    z-index: 1500; /* Asegúrate de que este número sea mayor */
+    white-space: normal; /* Previene el salto de línea */
+    backdrop-filter: none; /* Esto asegura que no se aplique un filtro de fondo */
+    max-width: 220px;
 }
+    
+    .nav.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-list {
+        display: flex; /* Asegúrate de que la lista también esté en flex */
+        flex-direction: column;
+        align-items: flex-start; /* Cambiado a flex-start para alinear a la izquierda */
+        gap: 3rem; /* Añade espacio entre los elementos */
+        list-style-type: none;
+    }
+    
+    .nav-list li a {
+        color: #fafafa; /* Color del texto en los enlaces */
+        font-weight: bold; /* Aplica negrita al texto */
+        padding: 0.5rem; /* Añade padding para espacio alrededor del texto */
+        text-decoration: none;
+    }
+    
+    .nav-list li a:hover {
+        color: #ffffff; /* Color del texto en hover */
+        background-color: #333; /* Color de fondo en hover, ajusta según tu preferencia */
+        transition: color 0.3s, background-color 0.3s; /* Transición suave */
+        border-radius: 4px; /* Redondea las esquinas del fondo */
+    }
+    
+    #submenu-gestiones li {
+        font-size: 1.3rem; /* Ajusta el tamaño según lo que desees */
+        padding-left: 20px; /* Espacio a la izquierda para simular una sangría */
 
-.nav.visible {
-    opacity: 1;
-    visibility: visible;
-}
+    }
+    .nav-header {
+        display: flex;                /* Usar flexbox para centrar el contenido */
+        flex-direction: column;      /* Organiza el ícono y el texto en una columna */
+        align-items: center;         /* Centra los elementos horizontalmente */
+        text-align: center;          /* Asegura que el texto esté centrado */
+        margin: 1rem 0;             /* Espaciado vertical opcional */
+    }
+    .nav-title {
+        margin-top: 0.5rem;         /* Espacio entre el ícono y el texto */
+        font-size: 1.5rem;          /* Ajusta el tamaño de la fuente según tus preferencias */
+        font-weight: bold; 
+        background-color: #333547;          /* Opcional: hace que el texto sea negrita */
+    }
+    
+    .nav-header i {
+        font-size: 8rem; /* Aumenta aún más el tamaño del ícono */
+        color: #333; /* Color del ícono */
+        background-color: white; /* Color de fondo blanco */
+        border-radius: 50%; /* Crea un círculo */
+        padding: 1.5rem; /* Ajusta el espacio alrededor del ícono */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra opcional para un efecto de profundidad */
+        display: flex; /* Asegura que el ícono se centre correctamente */
+        justify-content: center; /* Centra el ícono horizontalmente */
+        align-items: center; /* Centra el ícono verticalmente */
+    }
+    
+        
+    
 
-.nav-list {
-    flex-direction: column;
-    align-items: end;
-}
-
-.nav-list li a {
-    color: #ecececec;
-}
-
-nav {
-    opacity: 0;
-    visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Cambiado a flex-end para alinear a la derecha */
-    gap: 1rem;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #1c1c1c;
-    padding: 2rem;
-    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
-    z-index: 1000; /* Asegúrate de que este número sea mayor */
-    white-space: nowrap; /* Previene el salto de línea */
-}
-
-.nav.visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-.nav-list {
-    display: flex; /* Asegúrate de que la lista también esté en flex */
-    flex-direction: column;
-    align-items: flex-end; /* Alinea los elementos a la derecha */
-    gap: 2rem; /* Añade espacio entre los elementos */
-
-}
-
-
-.nav-list li a {
-    color: #ecececec;
-    font-weight: bold; /* Aplica negrita al texto */
-    padding: 0.5rem; /* Añade padding para espacio alrededor del texto */
-}
-
-.nav-list li a:hover {
-    color: #ffcc00; /* Color del texto en hover */
-    background-color: #333; /* Color de fondo en hover, ajusta según tu preferencia */
-    transition: color 0.3s, background-color 0.3s; /* Transición suave */
-    border-radius: 4px; /* Redondea las esquinas del fondo */
-}
 
 
 .input-container {
@@ -145,16 +177,33 @@ label {
 
 body {
     color: #566787;
-    background: #f5f5f5;
+    background: url('../back4.jpeg') no-repeat center center; /* Imagen de fondo */
+    background-size: cover; /* Hace que la imagen cubra todo el body */
+    background-attachment: fixed; /* Fija la imagen de fondo */
     font-family: 'Varela Round', sans-serif;
     font-size: 15px;
+    margin: 0; /* Elimina el margen predeterminado del body */
 }
+
+
 
 table.table {
     width: 100%; /* Permitir que la tabla se ajuste al contenido */
     table-layout: fixed; /* Permitir que el navegador determine el ancho de las columnas */
-    
+    border-collapse: collapse; /* Evitar el espacio entre las celdas */
+    border-radius: 15px; /* Bordes redondeados */
+    overflow: hidden; /* Para que los bordes redondeados se apliquen a las celdas */
+    margin-top: 10px;
 }
+
+#totalito {
+         /* Agrega un borde, puedes cambiar el color y grosor */
+    border-radius: 10px;        /* Cambia 10px al valor que prefieras para redondear los bordes */
+    padding: 15px 50px;           /* Espaciado interno para el texto */
+              /* Centra el texto dentro del h2 */
+}
+
+
 
 table.table tr th, 
 table.table tr td {
@@ -165,6 +214,11 @@ table.table tr td {
     padding: 15px 20px; /* Aumentar el padding para mejorar la legibilidad */
 }
 
+.custom-padding-margin {
+    padding: 8px 15px;  /* Espaciado interno */
+    margin: 1px 5px;    /* Espaciado externo */
+}
+
 
 
 .table-wrapper {
@@ -173,14 +227,16 @@ table.table tr td {
     margin: 30px 0;
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    
+
 }
 .table-title {        
     padding-bottom: 15px;
     background: #435d7d;
     color: #fff;
-    padding: 16px 30px;
-    margin: -20px -25px 10px;
-    border-radius: 3px 3px 0 0;
+    padding: 16px 16px;
+    border-radius: 15px; /* Bordes redondeados */
+
 }
 .table-title h2 {
     margin: 5px 0 0;
@@ -713,7 +769,6 @@ h2 {
     padding-bottom: 15px;
     background: #435d7d;
     color: #fff;
-    padding: 16px 30px;
     margin: -20px -25px 10px;
     border-radius: 3px 3px 0 0;
 }
@@ -795,3 +850,5 @@ h2 {
 .me-2 {
     margin-right: 0.5rem; /* Espacio a la derecha */
 }
+
+

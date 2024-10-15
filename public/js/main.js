@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stockLink = document.getElementById('consulta-stock');
     
     const navGestionInvetario = document.getElementById('gestion-inventario');
-    const GestionDetallePastilla = document.getElementById('Gestión-Detalle-Pastilla');
+    const GestionDetallePastilla = document.getElementById('Gestion-Detalle-Pastilla');
     const navFacturas = document.getElementById('nav-Facturas');
     const facturacionContainer = document.getElementById('facturacion-container');
 
@@ -28,16 +28,42 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
 
-    
+ 
+   // ----------------- MANEJO DE LA NAV ---------------------------- 
+  // Submenú toggle
+document.getElementById('gestiones-toggle').addEventListener('click', function(e) {
+    e.preventDefault(); // Evita el comportamiento predeterminado del enlace
+    const submenu = document.getElementById('submenu-gestiones');
+    submenu.classList.toggle('hidden'); // Alterna la clase hidden para mostrar/ocultar el submenú
+});
 
+// Mostrar nav al hacer clic en el botón de abrir
+abrir.addEventListener('click', () => {
+    const submenu = document.getElementById('submenu-gestiones');
+    submenu.classList.add('hidden'); // Asegura que el submenú esté oculto al abrir la nav
+    nav.classList.add('visible');
+});
 
-    abrir.addEventListener('click', () => {
-        nav.classList.add('visible');
-    });
+// Cerrar nav al hacer clic en el botón de cerrar
+cerrar.addEventListener('click', () => {
+    nav.classList.remove('visible');
+});
 
-    cerrar.addEventListener('click', () => {
+// Cerrar nav al presionar la tecla ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc') { // Comprueba si la tecla presionada es ESC
         nav.classList.remove('visible');
-    });
+    }
+});
+
+// Cerrar nav al hacer clic fuera de la nav
+document.addEventListener('click', (e) => {
+    if (nav.classList.contains('visible') && !nav.contains(e.target) && !abrir.contains(e.target)) {
+        nav.classList.remove('visible');
+    }
+});
+
+
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1621,7 +1647,7 @@ async function crearFactura() {
             const newFactura = await response.json();
             const id_factura = newFactura.id_factura; // Obtiene el id_factura generado
             console.log('Factura creada con éxito:', newFactura);
-            limpiarInputs();
+            
 
             // Ahora insertar los detalles de la factura
             await insertarDetalleFactura(id_factura); // Llamamos a la función para insertar los detalles
@@ -1689,6 +1715,7 @@ async function insertarDetalleFactura(id_factura) {
 
         if (response.ok) {
             alert('Detalles de factura creados con éxito.');
+            limpiarInputs();
         } else {
             const errorData = await response.json();
             alert('Error al crear los detalles de la factura:', errorData.message);
@@ -1708,7 +1735,6 @@ navFacturas.addEventListener('click', async (b) => {
     facturacionContainer.classList.remove('hidden');
 
 
-    
 
     nav.classList.remove('visible');
 });
@@ -1795,36 +1821,59 @@ function imprimirFactura() {
                         background-color: #f8f9fa;
                     }
                     .invoice-header {
-                        border: 1px solid #ccc;
+                        border: 2px solid #007bff;
                         padding: 20px;
-                        border-radius: 5px;
-                        background-color: #fff;
+                        border-radius: 10px;
+                        background-color: #e9ecef;
                     }
                     h1 {
                         text-align: center;
                         color: #007bff; /* Color del título */
+                        font-size: 32px;
+                        margin-bottom: 15px;
                     }
                     p {
-                        font-size: 14px;
+                        font-size: 16px;
                         margin: 5px 0;
                     }
                     hr {
                         margin: 20px 0;
+                        border: 1px solid #007bff;
                     }
                     table {
                         width: 100%;
                         border-collapse: collapse;
                         margin-top: 20px;
                     }
-                    th, td {
-                        padding: 8px;
+                    th {
+                        background-color: #007bff;
+                        color: white;
+                        padding: 12px;
                         text-align: left;
+                    }
+                    td {
+                        padding: 10px;
+                        text-align: left;
+                        border-bottom: 1px solid #dee2e6;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f2f2f2;
                     }
                     .footer {
                         margin-top: 20px;
                         text-align: center;
-                        font-size: 12px;
-                        color: #666;
+                        font-size: 14px;
+                        color: #007bff;
+                    }
+                    .text-success {
+                        color: #28a745;
+                        font-size: 24px;
+                    }
+                    .container {
+                        background-color: white;
+                        padding: 30px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     }
                 </style>
             </head>
@@ -1846,6 +1895,7 @@ const btnImprimirFactura = document.getElementById('btnImprimirFactura');
 if (btnImprimirFactura) {
     btnImprimirFactura.addEventListener('click', imprimirFactura);
 }
+
 
 
 
