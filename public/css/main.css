@@ -71,38 +71,45 @@ header {
 }
 
 .nav {
-    background-color: #333547; /* Color de fondo negro */
+    background-color: #333547; /* Color de fondo */
     opacity: 1; /* Asegura que la nav no sea transparente */
     visibility: hidden; /* Se mantiene oculta inicialmente */
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Cambiado a flex-start para alinear a la izquierda */
+    align-items: flex-start; /* Alinear a la izquierda */
     gap: 1rem;
     position: fixed; /* Fija la nav en la parte superior */
     top: 0;
-    left: 0; /* Cambiado para alinear la nav a la izquierda */
+    left: 0; /* Alinear la nav a la izquierda */
     bottom: 0;
+    width: 220px; /* Establece un ancho fijo */
     padding: 2rem;
-    padding-left: 1rem; /* Añadir padding a la izquierda para separación */
+    padding-left: 1rem; /* Separación a la izquierda */
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
     z-index: 1500; /* Asegúrate de que este número sea mayor */
     white-space: normal; /* Previene el salto de línea */
-    backdrop-filter: none; /* Esto asegura que no se aplique un filtro de fondo */
-    max-width: 220px;
+    backdrop-filter: none; /* Asegura que no se aplique un filtro de fondo */
+    height: 100vh; /* Ajusta la altura para ocupar el 100% de la ventana */
+    overflow-y: auto; /* Siempre muestra la barra de desplazamiento */
 }
-    
-    .nav.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    .nav-list {
-        display: flex; /* Asegúrate de que la lista también esté en flex */
-        flex-direction: column;
-        align-items: flex-start; /* Cambiado a flex-start para alinear a la izquierda */
-        gap: 3rem; /* Añade espacio entre los elementos */
-        list-style-type: none;
-    }
+
+.nav.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.nav-list {
+    display: flex; /* Asegúrate de que la lista esté en flex */
+    flex-direction: column;
+    align-items: flex-start; /* Alinear a la izquierda */
+    gap: 3rem; /* Espacio entre los elementos */
+    list-style-type: none;
+}
+
+/* Resto de tus estilos */
+
+
+/* Resto de tus estilos */
     
     .nav-list li a {
         color: #fafafa; /* Color del texto en los enlaces */
