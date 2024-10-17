@@ -621,14 +621,14 @@ app.post('/detalle_factura', async (req, res) => {
     try {
         // Crear la consulta de inserción para cada detalle
         for (const detalle of detalles) {
-            const { id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal } = detalle;
+            const { id_factura, id_pastilla_venta, precio, cantidad, subTotal } = detalle;
 
             const query = `
-                INSERT INTO detalle_factura (id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO detalle_factura (id_factura, id_pastilla_venta, precio_compra, cantidad, subTotal)
+                VALUES ($1, $2, $3, $4, $5)
             `;
 
-            await client.query(query, [id_factura, id_pastilla_venta, id_detalle, precio, cantidad, subTotal]);
+            await client.query(query, [id_factura, id_pastilla_venta, precio, cantidad, subTotal]);
         }
 
         res.status(200).json({ message: 'Detalles insertados correctamente.' });
@@ -664,6 +664,91 @@ app.post('/ingresarClienteNuevo', async (req, res) => {
         res.status(500).json({ message: 'Error al insertar el cliente.' });
     }
 });
+
+
+//----------- obtenemos los proveedores //
+
+app.get('/proveedores', async (req, res) => {
+    try {
+        const query = 'SELECT id_proveedor, nombre FROM proveedor';  // Consulta para obtener id y nombre
+        const result = await client.query(query);
+
+        // Verificar los resultados
+        console.log(result.rows); // Agrega esta línea para depurar
+
+        // Formatear los resultados en el formato requerido
+        const proveedores = result.rows.map(proveedor => ({
+            id_proveedor: proveedor.id_proveedor,
+            nombre: proveedor.nombre,
+            display: `${proveedor.id_proveedor} - ${proveedor.nombre}` // Formato para el select
+        }));
+
+        res.json(proveedores);
+    } catch (error) {
+        console.error('Error al obtener los proveedores:', error);
+        res.status(500).json({ message: 'Error al obtener los proveedores.' });
+    }
+});
+
+
+app.post('/compras', async (req, res) => {
+    const { facturaCompra, id_proveedor, fecha_compra, total } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO compras (facturaCompra, id_proveedor, fecha_compra, total)
+            VALUES ($1, $2, $3, $4) RETURNING *;
+        `;
+        const values = [facturaCompra, id_proveedor, fecha_compra, total];
+        
+        const result = await client.query(query, values);
+        const newCompra = result.rows[0]; // Obtener la compra recién creada
+        res.status(201).json(newCompra); // Enviar respuesta con la nueva compra
+    } catch (error) {
+        console.error('Error al insertar la compra:', error);
+        res.status(500).json({ message: 'Error al insertar la compra.' });
+    }
+});
+
+app.post('/detalle_compras', async (req, res) => {
+    const detalles = req.body; // Recibe un array de detalles
+
+    try {
+        // Iniciar la transacción
+        await client.query('BEGIN');
+
+        // Iterar sobre los detalles
+        for (const detalle of detalles) {
+            const { facturaCompra, id_pastilla_venta, cantidad, precio_costo_compra, subtotal } = detalle;
+
+            // Insertar el detalle en la tabla detalle_compras
+            const insertDetalleQuery = `
+                INSERT INTO detalle_compras (facturaCompra, id_pastilla_venta, cantidad, precio_costo_compra, subtotal)
+                VALUES ($1, $2, $3, $4, $5);
+            `;
+            await client.query(insertDetalleQuery, [facturaCompra, id_pastilla_venta, cantidad, precio_costo_compra, subtotal]);
+
+            // Actualizar el stock sumando la cantidad comprada
+            const updateStockQuery = `
+                UPDATE stock 
+                SET stock = stock + $1 
+                WHERE id_pastilla_venta = $2;
+            `;
+            await client.query(updateStockQuery, [cantidad, id_pastilla_venta]);
+        }
+
+        // Confirmar la transacción
+        await client.query('COMMIT');
+
+        res.status(200).json({ message: 'Detalles de la compra insertados y stock actualizado correctamente.' });
+    } catch (error) {
+        // Si ocurre un error, hacer rollback
+        await client.query('ROLLBACK');
+        console.error('Error al procesar la compra y actualizar el stock:', error);
+        res.status(500).json({ message: 'Error al procesar la compra y actualizar el stock.' });
+    }
+});
+
 
 
 

@@ -60,19 +60,36 @@ header {
     background: linear-gradient(to right, #333547, rgba(255, 255, 255, 0.8)); /* Degradado de gris claro a blanco con opacidad */
     color: white; /* Texto blanco para contraste */
     position: fixed; /* Fija el header en la parte superior */
-    top: 0; /* Asegura que el header esté en la parte superior */
-    left: 0; /* Asegura que el header esté alineado a la izquierda */
-    right: 0; /* Asegura que el header esté alineado a la derecha */
-    height: 102px; /* Ajusta este valor según lo pequeño que quieras el header */
-    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10vh; /* El header ocupa el 10% del alto de la pantalla */
+    z-index: 1000;
     justify-content: space-between;
     display: flex;
-    align-items: center;          
+    align-items: center;
+    padding: 0 2vw; /* Espacio interno ajustable horizontalmente */
 }
+
+@media (max-width: 768px) {
+    header {
+        height: 12vh; /* Ajusta el tamaño del header en pantallas más pequeñas */
+        padding: 0 4vw; /* Aumenta el padding en pantallas pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        height: 15vh; /* Ajusta aún más el tamaño en pantallas móviles */
+        padding: 0 6vw;
+        font-size: 0.9rem; /* Reduce el tamaño de fuente si es necesario */
+    }
+}
+
 
 .nav {
     background-color: #333547; /* Color de fondo */
-    opacity: 1; /* Asegura que la nav no sea transparente */
+    opacity: 0; /* Inicialmente invisible */
     visibility: hidden; /* Se mantiene oculta inicialmente */
     display: flex;
     flex-direction: column;
@@ -82,15 +99,16 @@ header {
     top: 0;
     left: 0; /* Alinear la nav a la izquierda */
     bottom: 0;
-    width: 220px; /* Establece un ancho fijo */
+    width: 220px; /* Ancho fijo */
     padding: 2rem;
-    padding-left: 1rem; /* Separación a la izquierda */
-    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
-    z-index: 1500; /* Asegúrate de que este número sea mayor */
+    padding-left: 1rem;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5); /* Sombra para darle efecto de modal */
+    z-index: 1500; /* Asegúrate de que este número sea mayor para superponer */
     white-space: normal; /* Previene el salto de línea */
-    backdrop-filter: none; /* Asegura que no se aplique un filtro de fondo */
-    height: 100vh; /* Ajusta la altura para ocupar el 100% de la ventana */
-    overflow-y: auto; /* Siempre muestra la barra de desplazamiento */
+    backdrop-filter: blur(5px); /* Filtro de fondo */
+    height: 100vh; /* Ocupa todo el alto de la ventana */
+    overflow-y: auto; /* Muestra la barra de desplazamiento si es necesario */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Transición suave para visibilidad */
 }
 
 .nav.visible {
@@ -99,11 +117,13 @@ header {
 }
 
 .nav-list {
-    display: flex; /* Asegúrate de que la lista esté en flex */
+    display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinear a la izquierda */
-    gap: 3rem; /* Espacio entre los elementos */
-    list-style-type: none;
+    align-items: flex-start; /* Alinea a la izquierda */
+    gap: 2rem; /* Espacio entre los elementos */
+    list-style-type: none; /* Sin estilo de lista */
+    padding: 0;
+    margin: 0;
 }
 
 /* Resto de tus estilos */
@@ -111,12 +131,13 @@ header {
 
 /* Resto de tus estilos */
     
-    .nav-list li a {
-        color: #fafafa; /* Color del texto en los enlaces */
-        font-weight: bold; /* Aplica negrita al texto */
-        padding: 0.5rem; /* Añade padding para espacio alrededor del texto */
-        text-decoration: none;
-    }
+.nav-list li a {
+    color: white; /* Color del texto */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 2.2vh; /* Ajusta el tamaño de fuente */
+    padding: 0.5rem 0.5rem; /* Espaciado interno */
+    transition: color 0.2s ease; /* Transición suave de color */
+}
     
     .nav-list li a:hover {
         color: #ffffff; /* Color del texto en hover */
@@ -125,11 +146,14 @@ header {
         border-radius: 4px; /* Redondea las esquinas del fondo */
     }
     
-    #submenu-gestiones li {
-        font-size: 1.3rem; /* Ajusta el tamaño según lo que desees */
-        padding-left: 20px; /* Espacio a la izquierda para simular una sangría */
-
+    #gestion-inventario,
+    #Gestion-Detalle-Pastilla,
+    #Proveedores {
+        font-size: 0.9vw; /* Ajusta el tamaño de letra según lo que necesites */
+        padding-left: 1.5vw;
     }
+    
+   
     .nav-header {
         display: flex;                /* Usar flexbox para centrar el contenido */
         flex-direction: column;      /* Organiza el ícono y el texto en una columna */
@@ -157,7 +181,28 @@ header {
     }
     
         
+    @media (max-width: 768px) {
+    .nav {
+        width: 180px; /* Ajusta el ancho para pantallas más pequeñas */
+        padding: 1.5rem;
+    }
     
+    .nav-list li a {
+        font-size: 1rem; /* Reduce el tamaño del texto */
+    }
+}
+
+@media (max-width: 480px) {
+    .nav {
+        width: 150px; /* Más pequeño en pantallas móviles */
+        padding: 1rem;
+    }
+    
+    .nav-list li a {
+        font-size: 0.9rem; /* Texto aún más pequeño en móviles */
+    }
+}
+
 
 
 
@@ -239,15 +284,33 @@ table.table tr td {
 }
 .table-title {        
     padding-bottom: 15px;
-    background: #435d7d;
-    color: #fff;
-    padding: 16px 16px;
+    background: #435d7d; /* Fondo azul oscuro */
+    color: #fff; /* Texto blanco */
+    padding: 16px 10px; /* Ajuste del padding horizontal */
     border-radius: 15px; /* Bordes redondeados */
-
+    text-align: center; /* Centrar el texto */
+    font-size: 1.5rem; /* Ajusta el tamaño del texto */
+    margin-bottom: 20px; /* Espacio debajo del título */
 }
+
+@media (max-width: 768px) {
+    .table-title {
+        font-size: 1.2rem; /* Reduce el tamaño del texto en pantallas medianas */
+        padding: 14px 8px; /* Reduce el padding para pantallas medianas */
+    }
+}
+
+@media (max-width: 480px) {
+    .table-title {
+        font-size: 1rem; /* Aún más pequeño en pantallas móviles */
+        padding: 12px 5px; /* Padding más pequeño en pantallas móviles */
+        border-radius: 10px; /* Bordes más ajustados en móviles */
+    }
+}
+
 .table-title h2 {
     margin: 5px 0 0;
-    font-size: 24px;
+    font-size: 1.8vw;
 }
 .table-title .btn-group {
     float: right;
@@ -276,6 +339,7 @@ table.table tr th, table.table tr td {
     border-color: #e9e9e9;
     padding: 12px 15px;
     vertical-align: middle;
+    font-size: 1.2vw;
 }
 
 table.table-striped tbody tr:nth-of-type(odd) {
@@ -857,5 +921,24 @@ h2 {
 .me-2 {
     margin-right: 0.5rem; /* Espacio a la derecha */
 }
+
+#facturacion-container h2 {
+    padding: 20px; /* Ajusta el valor según tus necesidades */
+    text-align: center;
+}
+
+
+
+/* PROVEEDORES */
+
+
+.invoice-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
 
 

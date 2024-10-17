@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const navFacturas = document.getElementById('nav-Facturas');
     const facturacionContainer = document.getElementById('facturacion-container');
 
+    //Div que contiene gestion de proveedores
+    const proveedoresContainer = document.getElementById('containerComprasProveedores');
+    const navGestionProveedores = document.getElementById('Proveedores');
+
+    
+    
+
     
 
     
@@ -84,6 +91,7 @@ vehiculoLink.addEventListener('click', async (e) => {
     nav.classList.remove('visible');
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
+    proveedoresContainer.classList.add('hidden');
 });
 
 
@@ -248,6 +256,7 @@ async function buscarPastillaPastillita() {
         crud_container_consulta_vehiculo.classList.add('hidden');
         nav.classList.remove('visible');
         facturacionContainer.classList.add('hidden');
+        proveedoresContainer.classList.add('hidden');
     });
     
 
@@ -323,6 +332,7 @@ async function buscarPastillaPastillita() {
         crudContainer.classList.add('hidden');
         crud_container_consulta_vehiculo.classList.add('hidden');
         facturacionContainer.classList.add('hidden');
+        proveedoresContainer.classList.add('hidden');
         nav.classList.remove('visible');
     });
 
@@ -439,7 +449,7 @@ navGestionInvetario.addEventListener('click', async (b) => {
     crudContainer.classList.remove('hidden');
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
-
+    proveedoresContainer.classList.add('hidden');
     nav.classList.remove('visible');
 });
 
@@ -922,7 +932,7 @@ GestionDetallePastilla.addEventListener('click', async (e) => {
     crudContainer.classList.add('hidden');
     nav.classList.remove('visible');
     facturacionContainer.classList.add('hidden');
-
+    proveedoresContainer.classList.add('hidden');
     crud_container_consulta_vehiculo.classList.remove('hidden');
 });
 
@@ -1733,7 +1743,7 @@ navFacturas.addEventListener('click', async (b) => {
     crudContainer.classList.add('hidden');
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.remove('hidden');
-
+    proveedoresContainer.classList.add('hidden');
 
 
     nav.classList.remove('visible');
@@ -1989,20 +1999,282 @@ function limpiarInputs() {
 }
 
 
+//---------------- CONFIGURACION PROVEEDORS ------------------------------
+
+
+async function loadProveedores() {
+    try {
+        const proveedorSelect = document.getElementById('selectproveedor');
+
+        // Limpiar opciones existentes solo si están vacías (para evitar recargar)
+        if (proveedorSelect.options.length === 1) {
+            const response = await fetch('/proveedores'); // Asegúrate de que esta ruta sea correcta
+            const proveedores = await response.json();
+
+            // Verificar los datos recibidos
+            console.log(proveedores); // Agrega esta línea para depurar
+
+            // Limpiar el select antes de agregar opciones
+            proveedorSelect.innerHTML = '<option value="" disabled selected>Seleccione un proveedor</option>';
+            
+            proveedores.forEach(proveedor => {
+                const option = document.createElement('option');
+                option.value = proveedor.id_proveedor; // Almacena el id_proveedor como valor del option
+                option.textContent = `${proveedor.id_proveedor} - ${proveedor.nombre}`;
+                
+                // Agregar los atributos dataset necesarios para el proveedor
+                option.dataset.nit = proveedor.nit; // Asegúrate de que el NIT se almacene en el dataset
+                option.dataset.nombre = proveedor.nombre;
+                proveedorSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error al cargar los proveedores:', error);
+    }
+}
+
+
+document.getElementById('selectproveedor').addEventListener('click', loadProveedores);
+
+
+document.getElementById('selectproveedor').addEventListener('change', (event) => {
+    const selectedOption = event.target.selectedOptions[0]; // Obtiene la opción seleccionada
+
+    if (selectedOption) {
+        // Rellenar los inputs con los valores correspondientes del proveedor
+        document.getElementById('idProveedor').value = selectedOption.value; // ID del proveedor
+        document.getElementById('nomProveedor').value = selectedOption.dataset.nombre; // Nombre del proveedor
+    }
+});
+
+//Cargamos los productos
+
+document.getElementById('selectProducto').addEventListener('click', function() {
+    // Verificar si ya se han cargado las opciones para evitar llamadas repetidas
+    if (this.options.length > 1) return;
+
+    // Hacer la solicitud al servidor para obtener los valores
+    fetch('/productos')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('selectProducto'); // Asegúrate de que el id es correcto
+            data.forEach(pastilla => {
+                const option = document.createElement('option');
+                option.value = pastilla.id_pastilla_venta; // ID del producto
+                option.textContent = pastilla.id_pastilla_venta; // Texto del option
+                option.dataset.precio = pastilla.precio_venta; // Almacena el precio en un atributo de datos
+                option.dataset.idPastilla = pastilla.id_pastilla; // Almacena el id_pastilla en un atributo de datos
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar los id_producto_factura:', error);
+        });
+});
+
+document.getElementById('selectProducto').addEventListener('change', (event) => {
+    const selectedOption = event.target.selectedOptions[0]; // Obtiene la opción seleccionada
+
+    if (selectedOption) {
+        // Rellenar los inputs con los valores correspondientes del proveedor
+        document.getElementById('proIdSeleccionado').value = selectedOption.value; // ID del proveedor
+    }
+});
+
+let totalAcumulado = 0; // Variable para el total acumulado
+
+
+//---------- Rellenamos la tabla ---------------
+
+function agregarDetalle() {
+    // Obtener los valores de los inputs
+    const productoSeleccionado = document.getElementById('selectProducto').value;
+    const cantidad = parseInt(document.getElementById('cantidadCompra').value);
+    const precioCosto = parseFloat(document.getElementById('costoCompra').value);
+
+    // Validar que se han completado todos los campos requeridos
+    if (!productoSeleccionado || isNaN(cantidad) || isNaN(precioCosto)) {
+        alert('Por favor, complete todos los campos.');
+        return;
+    }
+
+    // Calcular el subtotal
+    const subtotal = (cantidad * precioCosto).toFixed(2); // Calcular y redondear a 2 decimales
+
+    // Crear una nueva fila
+    const newRow = document.createElement('tr');
+
+    newRow.innerHTML = `
+        <td>${productoSeleccionado}</td>
+        <td>${precioCosto.toFixed(2)}</td>
+        <td>${cantidad}</td>
+        <td>${subtotal}</td>
+        <td><button class="btn btn-danger btn-sm remove-row">Eliminar</button></td>
+    `;
+
+    // Agregar la nueva fila al cuerpo de la tabla
+    document.getElementById('detallesTableBody').appendChild(newRow);
+
+    // Actualizar el total acumulado
+    totalAcumulado += parseFloat(subtotal);
+    document.getElementById('totalCompra').value = totalAcumulado.toFixed(2); // Mostrar el total en el input del total
+
+    // Limpiar los inputs después de agregar
+    document.getElementById('selectProducto').value = '';
+    document.getElementById('cantidadCompra').value = '';
+    document.getElementById('costoCompra').value = '';
+
+    // Agregar evento al botón de eliminar
+    const removeButton = newRow.querySelector('.remove-row');
+    removeButton.addEventListener('click', function () {
+        eliminarFila(newRow, subtotal); // Llamar a la función para eliminar la fila
+    });
+}
+
+function eliminarFila(row, subtotal) {
+    // Eliminar la fila del DOM
+    row.remove();
+
+    // Actualizar el total acumulado
+    totalAcumulado -= parseFloat(subtotal);
+    document.getElementById('totalCompra').value = totalAcumulado.toFixed(2); // Actualizar el total en el input
+}
 
 
 
+// Event listener para el botón "Agregar Detalle"
+document.getElementById('addDetail').addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar que el botón intente enviar el formulario
+    agregarDetalle(); // Llamar a la función para agregar el detalle
+});
 
 
 
+//Insertamos los datos a COMPRAS y DETALLE COMPRAS
 
+document.getElementById('btnRegistrarCompra').addEventListener('click', async (e) => {
+    e.preventDefault(); // Evita que se recargue la página al presionar el botón
 
+    // Obtener los valores de los inputs
+    const facturaCompra = document.getElementById('num-factura').value;
+    const id_proveedor = document.getElementById('idProveedor').value;
+    const fecha_compra = document.getElementById('fecha_compra').value;
+    const total = document.getElementById('totalCompra').value;
 
+    // Validar que los campos no estén vacíos
+    if (!facturaCompra || !id_proveedor || !fecha_compra || !total) {
+        alert("Todos los campos son obligatorios.");
+        return;
+    }
 
+    // Crear el objeto con los datos a enviar para la compra
+    const compraData = {
+        facturaCompra,
+        id_proveedor,
+        fecha_compra,
+        total
+    };
 
+    try {
+        // Registrar la compra
+        const responseCompra = await fetch('/compras', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(compraData)
+        });
 
+        // Si la compra se registró correctamente
+        if (responseCompra.ok) {
+            const newCompra = await responseCompra.json();
+            alert('Compra registrada con éxito. ID: ' + newCompra.id);
 
+            // Registrar los detalles de la compra
+            const filas = document.querySelectorAll('#detallesTableBody tr');
+            
+            if (filas.length === 0) {
+                alert('No se han agregado productos a la compra.');
+                return;
+            }
 
+            const detalles = [];
+
+            // Recorrer las filas y extraer los datos
+            filas.forEach((fila) => {
+                const id_pastilla_venta = fila.children[0].textContent;
+                const precio_costo_compra = parseFloat(fila.children[1].textContent);
+                const cantidad = parseInt(fila.children[2].textContent);
+                const subtotal = parseFloat(fila.children[3].textContent);
+
+                detalles.push({
+                    facturaCompra,
+                    id_pastilla_venta,
+                    cantidad,
+                    precio_costo_compra,
+                    subtotal
+                });
+            });
+
+            // Enviar los detalles al servidor
+            const responseDetalles = await fetch('/detalle_compras', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(detalles)
+            });
+
+            if (responseDetalles.ok) {
+                const data = await responseDetalles.json();
+                alert(data.message);
+            } else {
+                const errorData = await responseDetalles.json();
+                alert('Error al registrar los detalles: ' + errorData.message);
+            }
+        } else {
+            alert('Error al registrar la compra. Intente nuevamente.');
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        alert('Ocurrió un error al procesar la compra y los detalles.');
+    }
+});
+
+navGestionProveedores.addEventListener('click', async (b) => {
+    b.preventDefault();
+    consultaContainer.classList.add('hidden');
+    vehiculoContainer.classList.add('hidden');
+    stockContainer.classList.add('hidden');
+    crudContainer.classList.add('hidden');
+    crud_container_consulta_vehiculo.classList.add('hidden');
+    facturacionContainer.classList.add('hidden');
+    proveedoresContainer.classList.remove('hidden');
+    nav.classList.remove('visible');
+});
+
+// Seleccionar el botón "Nueva Factura"
+document.getElementById('nuevaFactura').addEventListener('click', () => {
+    // Limpiar inputs de la sección de proveedor
+    const proveedorSelect = document.getElementById('selectproveedor');
+    proveedorSelect.value = ''; // Restablecer el select
+    document.getElementById('idProveedor').value = ''; // Limpiar idProveedor
+    document.getElementById('nomProveedor').value = ''; // Limpiar nomProveedor
+
+    // Limpiar inputs de la sección de detalles de la compra
+    document.getElementById('fecha_compra').value = ''; // Limpiar fecha
+    document.getElementById('num-factura').value = ''; // Limpiar número de factura
+    document.getElementById('totalCompra').value = ''; // Limpiar total
+
+    // Limpiar detalles de la tabla
+    const detallesTableBody = document.getElementById('detallesTableBody');
+    detallesTableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla
+
+    // (Opcional) Si tienes un contador o variable para el total, puedes resetearlo aquí
+    // totalCompra = 0; // Resetea el total si tienes una variable
+
+    // También puedes reiniciar otras variables o estados que tengas asociados a la forma
+});
 
 
 
