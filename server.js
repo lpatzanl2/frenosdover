@@ -750,6 +750,34 @@ app.post('/detalle_compras', async (req, res) => {
 });
 
 
+app.post('/ingresarProveedorNuevo', async (req, res) => {
+    const { nombre, telefono, telefono2, direccion } = req.body;
+
+    // Verificar que todos los datos estén presentes
+    if (!nombre || !telefono || !telefono2 || !direccion) {
+        return res.status(400).json({ message: 'Faltan datos del del proveedor.' });
+    }
+
+    try {
+        // Consulta SQL para insertar el nuevo cliente
+        const query = 'INSERT INTO proveedor ( nombre, telefono, telefono2, direccion) VALUES ($1, $2, $3, $4) RETURNING *';
+
+        const values = [nombre, telefono, telefono2, direccion];
+
+        const result = await client.query(query, values);
+        const newCliente = result.rows[0];
+
+        // Responder con el cliente recién agregado
+        res.status(201).json(newCliente);
+    } catch (error) {
+        console.error('Error al insertar el cliente:', error);
+        res.status(500).json({ message: 'Error al insertar el cliente.' });
+    }
+});
+
+
+
+
 
 
 

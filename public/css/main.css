@@ -470,6 +470,10 @@ table.table .avatar {
     box-shadow: none;
     background: #ddd;
 }
+
+
+
+
 /* Modal styles */
 .modal .modal-dialog {
     max-width: 400px;
@@ -938,6 +942,9 @@ h2 {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+
+
 
 
 

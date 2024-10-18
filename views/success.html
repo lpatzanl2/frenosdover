@@ -10,6 +10,14 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="stylesCrud.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -108,6 +116,9 @@
 </head>
 <body>
 
+
+
+
     <header>
        
         <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
@@ -133,6 +144,7 @@
                 <li><i class="bi bi-file-earmark-pdf"></i><a href="#" id="nav-Facturas">Registro Ventas/Cotizaciones</a></li>
                 <li>
                     <i class="bi bi-database-add"></i><a href="#" id="gestiones-toggle">Administrar Inventario</a>
+                    
 
                     <ul id="submenu-gestiones" class="nav-list hidden">
                         
@@ -789,12 +801,17 @@
         <form id="purchaseForm">
             <div class="mb-3">
                 <label for="proveedor" class="form-label">Proveedor</label>
-                <select id="selectproveedor" class="form-select" required>
+                <select id="selectproveedor" class="form-select">
                     <option value="">Seleccione un proveedor</option>
                     <!-- Opciones de proveedores -->
                 </select>
-                <input type="hidden" class="form-control FacturaClassInputs" id="idProveedor" required placeholder="idProveedor">
-                <input type="hidden" class="form-control FacturaClassInputs" id="nomProveedor" required>
+
+                <button type="button" id="btnabrirmodalProveedor" class="btn btn-13 me-2">Agregar Proveedor</button>
+
+
+                
+                <input type="hidden" class="form-control FacturaClassInputs" id="idProveedor"  placeholder="idProveedor">
+                <input type="hidden" class="form-control FacturaClassInputs" id="nomProveedor" >
             </div>
             <div class="mb-3 row">
                 <div class="col-md-6">
@@ -803,12 +820,12 @@
                 </div>
                 <div class="col-md-6">
                     <label for="num-factura" class="form-label">Número Factura</label>
-                    <input type="text" class="form-control FacturaClassInputs" id="num-factura" required placeholder="Número de Factura">
+                    <input type="text" class="form-control FacturaClassInputs" id="num-factura"  required placeholder="Número de Factura">
                 </div>
             </div>
             <div class="mb-3">
                 <label for="total" class="form-label">Total</label>
-                <input type="number" id="totalCompra" class="form-control" step="0.01" required placeholder="Total de la Compra">
+                <input type="number" id="totalCompra" required class="form-control" step="0.01"  placeholder="Total de la Compra">
             </div>
             <button type="submit" class="btn btn-primary" id="btnRegistrarCompra">Registrar Compra</button>
         </form>
@@ -820,14 +837,14 @@
         <div id="detallesContainer">
             <div class="detalle-item mb-3">
                 <label for="pastilla_venta" class="form-label">Id Producto</label>
-                <select id="selectProducto" class="form-select producto-select" required>
+                <select id="selectProducto" class="form-select producto-select" >
                     <option value="">Seleccione un producto</option>
                     <!-- Opciones de productos -->
                 </select>
                 <label for="cantidad" class="form-label">Cantidad</label>
-                <input id="cantidadCompra" type="number" class="form-control cantidad" required placeholder="Cantidad">
-                <label for="precio_costo" class="form-label">Precio Costo</label>
-                <input id="costoCompra" type="number" class="form-control precio_costo" step="0.01" required placeholder="Precio Costo">
+                <input id="cantidadCompra" type="number" class="form-control cantidad"  placeholder="Cantidad">
+                <label for="precio_costo" required  class="form-label">Precio Costo</label>
+                <input id="costoCompra" type="number" class="form-control precio_costo" step="0.01"  placeholder="Precio Costo">
             </div>
         </div>
         <div class="mb-3">
@@ -854,6 +871,111 @@
     </div>
 </div>
 
+<!-- Modal para agregar nuevo proveedor -->
+<div id="addProveedorModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formAddProveedor">
+                <div class="modal-header">						
+                    <h4 class="modal-title">AGREGAR NUEVO PROVEEDOR</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nombreProveedor">Nombre Proveedor</label>
+                        <input type="text" class="form-control" id="nombreProveedor" name="nombreProveedor" placeholder="Nombre del Proveedor" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefonoProveedor">Teléfono</label>
+                        <input type="text" class="form-control" id="telefonoProveedor" name="telefonoProveedor" placeholder="Teléfono del proveedor" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono2Proveedor">Teléfono 2 (en caso tenga)</label>
+                        <input type="text" class="form-control" id="telefono2Proveedor" name="telefono2Proveedor" placeholder="Teléfono del proveedor" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccionProveedor">Dirección</label>
+                        <input type="text" class="form-control" id="direccionProveedor" name="direccionProveedor" placeholder="Dirección del Proveedor" required maxlength="255">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" id="btnAddProveedor" class="btn btn-success" value="Agregar Proveedor">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Getions de CLIENTES -->
+
+<!-- Agrega esto en la sección <head> de tu HTML -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    
+
+
+<div id="containerClientes" class="container mt-5 invoice-container ">
+    <h2 class="text-center">Gestión de Clientes</h2>
+
+    <!-- Sección para seleccionar y gestionar clientes -->
+    <div class="form-section mb-4">
+        <h4>Seleccionar Cliente</h4>
+        <form id="clientForm">
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label for="selectCliente" class="form-label">Seleccionar Cliente</label>
+                    <select id="selectCliente" class="form-select" style="width: 100%;">
+                        <option value="">Seleccione un cliente</option>
+                        <!-- Las opciones de clientes se cargarán aquí -->
+                    </select>
+                    
+                </div>
+                <button type="button" id="btnabrirmodalCliente" class="btn btn-13 me-2">Agregar Cliente</button>
+                <button type="button" id="btnEditarCliente" class="btn btn-warning me-2">Editar Cliente</button>
+                <button type="button" id="btnEliminarCliente" class="btn btn-danger">Eliminar Cliente</button>
+                
+                <input type="hidden" class="form-control FacturaClassInputs" id="idCliente" placeholder="ID Cliente">
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla para mostrar la lista de clientes -->
+    <table id="tablaClientes" class="table table-striped table-hover mt-4">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>NIT</th>
+            </tr>
+        </thead>
+        <tbody id="clientesTableBody">
+            <!-- Los clientes se agregarán aquí -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para agregar o editar cliente -->
+<!-- Modal para agregar nuevo cliente -->
+
+    
+        
+            
+                
+                
+               
+                
+               
+            
+            
+        
+    
 
 
 
@@ -861,9 +983,6 @@
 
 </div>  
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
 

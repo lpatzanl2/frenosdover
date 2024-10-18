@@ -1142,7 +1142,7 @@ document.getElementById('actualizarVehiculoCrud').addEventListener('click', asyn
 // Captura el evento de clic en el botón de eliminar
 // Captura el evento de clic en el botón de eliminar
 // Captura el evento de clic en el botón de eliminar
-document.addEventListener('click', (event) => {
+/*document.addEventListener('click', (event) => {
     if (event.target.closest('.delete')) {
         const idDetalle = event.target.closest('.delete').dataset.id; // Obtener el ID desde el atributo data-id
         
@@ -1177,6 +1177,7 @@ async function eliminarRegistro(idDetalle) {
         alert('Hubo un problema al eliminar el registro. Verifique la consola para más detalles.');
     }
 }
+    */
 
 //Funcion para agregar un nuevo record
 
@@ -2280,6 +2281,108 @@ document.getElementById('nuevaFactura').addEventListener('click', () => {
 
 
 
+
+//Mandamos parametros a nuestro metodo POST del servidor
+
+
+
+
+
+$('#btnabrirmodalProveedor').on('click', function() {
+    
+    $('#addProveedorModal').modal('show');
+});
+
+
+
+    document.getElementById('btnAddProveedor').addEventListener('click', async (e) => {
+        e.preventDefault(); // Evitar el comportamiento por defecto del botón
+
+        const nombreProveedor = document.getElementById('nombreProveedor').value;
+        const telefonoProveedor = document.getElementById('telefonoProveedor').value;
+        const telefono2Proveedor = document.getElementById('telefono2Proveedor').value;
+        const direccionProveedor = document.getElementById('direccionProveedor').value;
+
+        // Validar que los campos no estén vacíos
+        if (!nombreProveedor || !telefonoProveedor || !telefono2Proveedor || !direccionProveedor) {
+            alert("Por favor, rellena todos los campos.");
+            return;
+        }
+
+        const nuevoProveedor = {
+            nombre: nombreProveedor,
+            telefono: telefonoProveedor,
+            telefono2: telefono2Proveedor,
+            direccion: direccionProveedor
+        };
+
+        try {
+            const response = await fetch('/ingresarProveedorNuevo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(nuevoProveedor)
+            });
+
+            const result = await response.json();  // Verificar la respuesta del servidor
+
+            if (response.ok) {
+                alert('Proveedor agregado exitosamente.');
+                // Limpiar los campos del formulario antes de ocultar el modal
+                document.getElementById('nombreProveedor').value = '';
+                document.getElementById('telefonoProveedor').value = '';
+                document.getElementById('telefono2Proveedor').value = '';
+                document.getElementById('direccionProveedor').value = '';
+                $('#addProveedorModal').modal('hide');
+            } else {
+                alert('Error al agregar el proveedor: ' + (result.message || 'Ocurrió un error.'));
+            }
+        } catch (error) {
+            console.error('Error al agregar el proveedor:', error);
+            alert('Hubo un error al intentar agregar el proveedor.');
+        }
+    });
+
+
+
+    //Gestionar Clientes
+
+    $(document).ready(function() {
+        // Inicializar Select2
+        $('#selectCliente').select2();
+    
+        // Función para cargar los clientes
+        function cargarClientes() {
+            $.ajax({
+                url: '/clientes',
+                method: 'GET',
+                success: function(data) {
+                    // Limpiar el select antes de agregar nuevos clientes
+                    $('#selectCliente').empty().append('<option value="">Seleccione un cliente</option>');
+    
+                    // Agregar las opciones de clientes al select
+                    data.forEach(cliente => {
+                        $('#selectCliente').append(
+                            `<option value="${cliente.id_cliente}">${cliente.display}</option>`
+                        );
+                    });
+    
+                    // Refrescar Select2 para mostrar los nuevos datos
+                    $('#selectCliente').select2();
+                },
+                error: function() {
+                    console.error('Error al cargar los clientes.');
+                }
+            });
+        }
+    
+        // Cargar los clientes al cargar la página
+        cargarClientes();
+    });
+    
+
+    
 
 
 
