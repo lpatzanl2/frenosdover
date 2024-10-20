@@ -148,7 +148,8 @@ header {
     
     #gestion-inventario,
     #Gestion-Detalle-Pastilla,
-    #Proveedores {
+    #Proveedores,
+    #gestion-clientes {
         font-size: 0.9vw; /* Ajusta el tamaño de letra según lo que necesites */
         padding-left: 1.5vw;
     }

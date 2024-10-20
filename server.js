@@ -780,6 +780,26 @@ app.post('/ingresarProveedorNuevo', async (req, res) => {
 
 
 
+app.put('/clientesupdate/:id', async (req, res) => {
+    const idCliente = req.params.id;
+    const { nombre, direccion, telefono, nit } = req.body;
+
+    try {
+        const result = await client.query(
+            'UPDATE clientes SET nombre = $1, direccion = $2, telefono = $3, nit = $4 WHERE id_cliente = $5',
+            [nombre, direccion, telefono, nit, idCliente]
+        );
+
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: 'Cliente actualizado exitosamente' });
+        } else {
+            res.status(404).json({ message: 'Cliente no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar el cliente:', error);
+        res.status(500).json({ message: 'Error al actualizar el cliente' });
+    }
+});
 
 
 

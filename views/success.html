@@ -1,120 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="stylesCrud.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/main.css">
-
-    <style>
-
-        .hidden {
-            display: none;
-        }
-        .visible {
-            display: block;
-        }
-        #result-table, #consulta-vehiculo {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #result-table th, #result-table td,
-        #consulta-vehiculo th, #consulta-vehiculo td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        #result-table th, #consulta-vehiculo th {
-            background-color: #f2f2f2;
-        }
-
-
-
-        #tabla_modelo, #consulta-vehiculo, #tabla_stock {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-        }
-        #tabla_modelo th, #tabla_modelo td,
-        #consulta-vehiculo th, #consulta-vehiculo td,
-        #tabla_stock th, #tabla_stock td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        #tabla_modelo th, #consulta-vehiculo th, #tabla_stock th {
-            background-color: #f2f2f2;
-        }
-
-        
-
-        /* INPUTS */ 
-        .input {
-        border-radius: 10px;
-        outline: 2px solid #FEBF00;
-        border: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        background-color: #e9e9e9;
-        outline-offset: 3px;
-        padding: 10px 1rem;
-        transition: 0.25s;
-        width: 600px;
-        }
-
-        .input:focus {
-        outline-offset: 5px;
-        background-color: #fff
-        }
-
-
-        
-
-
-
-#titulo-principal {
-    color: rgb(0, 0, 0); /* Texto en blanco */
-    font-weight: bold; /* Letras en negrita */
-    padding: 20px;
-    text-align: center;
-    font-size: 3vw;
-}
-
-
-#divPrincipal {
-    margin: 40px; /* Aplica un margen de 10px a todos los lados del div */
-    margin-top: 110px; /* Añade un margen superior para que esté debajo del header */
-
-    background: white;
-    border-radius: 15px; /* Bordes redondeados */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para el div */
-    /* Puedes agregar más estilos aquí según sea necesario */
-    min-height: calc(100vh - 20px); /* Altura mínima del 100% de la ventana menos el margen */
-    box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño */
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesCrud.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     
-}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <style>
+
+            .hidden {
+                display: none;
+            }
+            .visible {
+                display: block;
+            }
+            #result-table, #consulta-vehiculo {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            #result-table th, #result-table td,
+            #consulta-vehiculo th, #consulta-vehiculo td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            #result-table th, #consulta-vehiculo th {
+                background-color: #f2f2f2;
+            }
+
+
+
+            #tabla_modelo, #consulta-vehiculo, #tabla_stock {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+            }
+            #tabla_modelo th, #tabla_modelo td,
+            #consulta-vehiculo th, #consulta-vehiculo td,
+            #tabla_stock th, #tabla_stock td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            #tabla_modelo th, #consulta-vehiculo th, #tabla_stock th {
+                background-color: #f2f2f2;
+            }
+
+            
+
+            /* INPUTS */ 
+            .input {
+            border-radius: 10px;
+            outline: 2px solid #FEBF00;
+            border: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #e9e9e9;
+            outline-offset: 3px;
+            padding: 10px 1rem;
+            transition: 0.25s;
+            width: 600px;
+            }
+
+            .input:focus {
+            outline-offset: 5px;
+            background-color: #fff
+            }
+
+
+            
+
+
+
+    #titulo-principal {
+        color: rgb(0, 0, 0); /* Texto en blanco */
+        font-weight: bold; /* Letras en negrita */
+        padding: 20px;
+        text-align: center;
+        font-size: 3vw;
+    }
+
+
+    #divPrincipal {
+        margin: 40px; /* Aplica un margen de 10px a todos los lados del div */
+        margin-top: 110px; /* Añade un margen superior para que esté debajo del header */
+
+        background: white;
+        border-radius: 15px; /* Bordes redondeados */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para el div */
+        /* Puedes agregar más estilos aquí según sea necesario */
+        min-height: calc(100vh - 20px); /* Altura mínima del 100% de la ventana menos el margen */
+        box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño */
+        
+    }
 
 
 
 
 
-    </style>
-</head>
+        </style>
+    </head>
 <body>
+
+
 
 
 
@@ -151,6 +158,7 @@
                         <li><a href="#" id="gestion-inventario">Gestión del inventario</a></li>
                         <li><a href="#" id="Gestion-Detalle-Pastilla">Gestión Detalle Pastilla</a></li>
                         <li><a href="#" id="Proveedores">Compras A Proveedores</a></li>
+                        <li><a href="#" id="gestion-clientes">Gestión Clientes</a></li>
                     </ul>
                     
                 </li>
@@ -911,15 +919,12 @@
 
 <!-- Getions de CLIENTES -->
 
-<!-- Agrega esto en la sección <head> de tu HTML -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
 
     
 
 
-<div id="containerClientes" class="container mt-5 invoice-container ">
+<div id="containerClientes" class="container mt-5 invoice-container hidden">
     <h2 class="text-center">Gestión de Clientes</h2>
 
     <!-- Sección para seleccionar y gestionar clientes -->
@@ -936,8 +941,8 @@
                     
                 </div>
                 <button type="button" id="btnabrirmodalCliente" class="btn btn-13 me-2">Agregar Cliente</button>
-                <button type="button" id="btnEditarCliente" class="btn btn-warning me-2">Editar Cliente</button>
-                <button type="button" id="btnEliminarCliente" class="btn btn-danger">Eliminar Cliente</button>
+                
+                <button type="button" id="btnEditarCliente" class="btn btn-13 me-2">Editar Cliente</button>
                 
                 <input type="hidden" class="form-control FacturaClassInputs" id="idCliente" placeholder="ID Cliente">
             </div>
@@ -963,7 +968,53 @@
 
 <!-- Modal para agregar o editar cliente -->
 <!-- Modal para agregar nuevo cliente -->
+<!-- Modal para editar cliente -->
+<!-- Modal para editar cliente -->
 
+<div class="modal fade" id="modalEditarCliente" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Editar Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarCliente">
+                    <div class="form-group">
+                        <label for="ClienteEditable">ID</label>
+                        <input type="text" id="idClienteEditable" class="form-control" placeholder="Id Cliente" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreClienteEditable">Nombre</label>
+                        <input type="text" id="nombreClienteEditable" class="form-control" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccionClienteEditable" class="form-control" placeholder="Dirección">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" id="telefonoClienteEditable" class="form-control" placeholder="Teléfono">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Nit</label>
+                        <input type="email" id="nitClienteEditable" class="form-control" placeholder="Email">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>  
+</div>
+
+        
+
+  
     
         
             

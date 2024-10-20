@@ -17,6 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const navGestionInvetario = document.getElementById('gestion-inventario');
     const GestionDetallePastilla = document.getElementById('Gestion-Detalle-Pastilla');
+
+    const gestion_clientes = document.getElementById('gestion-clientes');
+    const containerClientes = document.getElementById('containerClientes');
+
+
+    gestion_clientes.addEventListener('click', async (b) => {
+        b.preventDefault();
+        consultaContainer.classList.add('hidden');
+        vehiculoContainer.classList.add('hidden');
+        stockContainer.classList.add('hidden');
+        crudContainer.classList.add('hidden');
+        crud_container_consulta_vehiculo.classList.add('hidden');
+        facturacionContainer.classList.add('hidden');
+        proveedoresContainer.classList.add('hidden');
+        containerClientes.classList.add('hidden');
+        containerClientes.classList.remove('hidden');
+        nav.classList.remove('visible');
+    });
+
+    
     const navFacturas = document.getElementById('nav-Facturas');
     const facturacionContainer = document.getElementById('facturacion-container');
 
@@ -92,6 +112,7 @@ vehiculoLink.addEventListener('click', async (e) => {
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
+    containerClientes.classList.add('hidden');
 });
 
 
@@ -257,6 +278,7 @@ async function buscarPastillaPastillita() {
         nav.classList.remove('visible');
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
+        containerClientes.classList.add('hidden');
     });
     
 
@@ -333,6 +355,7 @@ async function buscarPastillaPastillita() {
         crud_container_consulta_vehiculo.classList.add('hidden');
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
+        containerClientes.classList.add('hidden');
         nav.classList.remove('visible');
     });
 
@@ -450,6 +473,7 @@ navGestionInvetario.addEventListener('click', async (b) => {
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
+    containerClientes.classList.add('hidden');
     nav.classList.remove('visible');
 });
 
@@ -934,6 +958,7 @@ GestionDetallePastilla.addEventListener('click', async (e) => {
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
     crud_container_consulta_vehiculo.classList.remove('hidden');
+    containerClientes.classList.add('hidden');
 });
 
 
@@ -1001,9 +1026,7 @@ async function buscarPastilla6() {
                             <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
                         </a>
 
-                        <a class="delete" data-toggle="modal" data-id="${row.id_detalle}">
-                            <i class="material-icons" data-toggle="tooltip">&#xE872;</i>
-                        </a>
+                        
 
 
    
@@ -1745,7 +1768,7 @@ navFacturas.addEventListener('click', async (b) => {
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.remove('hidden');
     proveedoresContainer.classList.add('hidden');
-
+    containerClientes.classList.add('hidden');
 
     nav.classList.remove('visible');
 });
@@ -1804,7 +1827,7 @@ function imprimirFactura() {
     // Crear el contenido HTML con los valores actuales
     const clienteHTML = `
         <div class="invoice-header text-center">
-            <h1 class="display-4">Factura</h1>
+            <h1 class="display-4">COTIZACION FRENOS DOVER</h1>
             <p><strong>Cliente:</strong> ${clienteInput}</p>
             <p><strong>NIT:</strong> ${nitInput}</p>
             <p><strong>Dirección:</strong> ${direccionInput}</p>
@@ -1918,6 +1941,8 @@ if (btnImprimirFactura) {
 $('#btnAgregarCliente').on('click', function() {
     $('#addClienteModal').modal('show');
 });
+
+
 
 document.getElementById('btnAddCliente').addEventListener('click', async (e) => {
 
@@ -2251,6 +2276,7 @@ navGestionProveedores.addEventListener('click', async (b) => {
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.remove('hidden');
+    containerClientes.classList.add('hidden');
     nav.classList.remove('visible');
 });
 
@@ -2289,9 +2315,10 @@ document.getElementById('nuevaFactura').addEventListener('click', () => {
 
 
 $('#btnabrirmodalProveedor').on('click', function() {
-    
     $('#addProveedorModal').modal('show');
 });
+
+
 
 
 
@@ -2348,45 +2375,184 @@ $('#btnabrirmodalProveedor').on('click', function() {
 
     //Gestionar Clientes
 
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#selectCliente').select2();
     
-        // Función para cargar los clientes
-        function cargarClientes() {
-            $.ajax({
-                url: '/clientes',
-                method: 'GET',
-                success: function(data) {
-                    // Limpiar el select antes de agregar nuevos clientes
-                    $('#selectCliente').empty().append('<option value="">Seleccione un cliente</option>');
+    // Agregar el evento de cambio al select
+    const selectCliente = document.getElementById('selectCliente');
+    selectCliente.addEventListener('change', mostrarClienteSeleccionado);
     
-                    // Agregar las opciones de clientes al select
-                    data.forEach(cliente => {
-                        $('#selectCliente').append(
-                            `<option value="${cliente.id_cliente}">${cliente.display}</option>`
-                        );
-                    });
+    // Agregar el evento para cargar los clientes cada vez que se abra el select
+    selectCliente.addEventListener('focus', cargarClientes);
     
-                    // Refrescar Select2 para mostrar los nuevos datos
-                    $('#selectCliente').select2();
-                },
-                error: function() {
-                    console.error('Error al cargar los clientes.');
-                }
+    // Evento para abrir el modal de edición
+    const btnEditarCliente = document.getElementById('btnEditarCliente');
+    btnEditarCliente.addEventListener('click', abrirModalEditarCliente);
+    
+    async function cargarClientes() {
+        try {
+            const response = await fetch('/clientes');
+            if (!response.ok) {
+                throw new Error('Error al obtener los clientes');
+            }
+
+            const clientes = await response.json();
+            const selectCliente = document.getElementById('selectCliente');
+            selectCliente.innerHTML = '<option value="">Seleccione un cliente</option>';
+
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.id_cliente; // ID del cliente como valor
+                option.textContent = cliente.display; // Texto a mostrar
+                selectCliente.appendChild(option);
             });
+        } catch (error) {
+            console.error('Error al cargar los clientes:', error);
         }
+    }
     
-        // Cargar los clientes al cargar la página
-        cargarClientes();
+    function mostrarClienteSeleccionado() {
+        const selectCliente = document.getElementById('selectCliente');
+        const selectedValue = selectCliente.value;
+        const clientesTableBody = document.getElementById('clientesTableBody');
+
+        // Limpiar el contenido del tbody
+        clientesTableBody.innerHTML = '';
+
+        // Si se seleccionó un cliente, agregarlo a la tabla
+        if (selectedValue) {
+            const selectedOption = selectCliente.options[selectCliente.selectedIndex];
+            const clienteInfo = selectedOption.textContent.split(' - '); // Suponiendo que la estructura es "NIT - Nombre - Teléfono - Dirección - ID"
+
+            // Crear una nueva fila en la tabla
+            const row = document.createElement('tr');
+            
+            // Crear las celdas y agregar la información
+            const idCell = document.createElement('td');
+            idCell.textContent = clienteInfo[4]; // ID del cliente
+            row.appendChild(idCell);
+            
+            const nombreCell = document.createElement('td');
+            nombreCell.textContent = clienteInfo[1]; // Nombre del cliente
+            row.appendChild(nombreCell);
+
+            const direccionCell = document.createElement('td');
+            direccionCell.textContent = clienteInfo[3]; // Dirección del cliente
+            row.appendChild(direccionCell);
+
+            const telefonoCell = document.createElement('td');
+            telefonoCell.textContent = clienteInfo[2]; // Teléfono del cliente
+            row.appendChild(telefonoCell);
+
+            const nitCell = document.createElement('td');
+            nitCell.textContent = clienteInfo[0]; // NIT del cliente
+            row.appendChild(nitCell);
+
+            // Agregar la fila al tbody
+            clientesTableBody.appendChild(row);
+        }
+    }
+
+    function abrirModalEditarCliente() {
+        const selectCliente = document.getElementById('selectCliente');
+        const selectedValue = selectCliente.value;
+
+        // Si se seleccionó un cliente, cargar sus datos en el modal
+        if (selectedValue) {
+            const selectedOption = selectCliente.options[selectCliente.selectedIndex];
+            const clienteInfo = selectedOption.textContent.split(' - ');
+
+            // Cargar la información en el modal
+            document.getElementById('idClienteEditable').value = clienteInfo[4]; // ID
+            document.getElementById('nombreClienteEditable').value = clienteInfo[1]; // Nombre
+            document.getElementById('direccionClienteEditable').value = clienteInfo[3]; // Dirección
+            document.getElementById('telefonoClienteEditable').value = clienteInfo[2]; // Teléfono
+            document.getElementById('nitClienteEditable').value = clienteInfo[0]; // NIT
+
+            // Mostrar el modal
+            $('#modalEditarCliente').modal('show'); // Si estás usando Bootstrap
+        } else {
+            alert("Por favor, selecciona un cliente para editar.");
+        }
+    }
+
+
+    // Evento para guardar cambios en el cliente
+// Evento para guardar cambios en el cliente
+const btnGuardarCambios = document.getElementById('btnGuardarCambios');
+btnGuardarCambios.addEventListener('click', async () => {
+    const idCliente = document.getElementById('idClienteEditable').value;
+    const nombre = document.getElementById('nombreClienteEditable').value;
+    const direccion = document.getElementById('direccionClienteEditable').value;
+    const telefono = document.getElementById('telefonoClienteEditable').value;
+    const nit = document.getElementById('nitClienteEditable').value;
+
+    const clienteActualizado = {
+        nombre: nombre,
+        direccion: direccion,
+        telefono: telefono,
+        nit: nit
+    };
+
+    try {
+        const response = await fetch(`/clientesupdate/${idCliente}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(clienteActualizado)
+        });
+
+        if (response.ok) {
+            alert('Cliente actualizado exitosamente.');
+            // Cargar nuevamente los clientes para actualizar la tabla
+            await cargarClientes(); // Llama a la función para recargar los clientes
+            
+            // Obtener el ID del primer cliente en la tabla
+            const clientesTableBody = document.getElementById('clientesTableBody');
+            const firstRow = clientesTableBody.querySelector('tr');
+            if (firstRow) {
+                const idFirstCliente = firstRow.cells[0].textContent; // Asumiendo que el ID está en la primera celda
+                selectCliente.value = idFirstCliente; // Cargar el ID en el select
+                mostrarClienteSeleccionado(); // Llamar a la función para mostrar la información del cliente seleccionado
+            }
+
+            $('#modalEditarCliente').modal('hide'); // Ocultar el modal después de actualizar
+        } else {
+            const result = await response.json();
+            alert('Error al actualizar el cliente: ' + (result.message || 'Ocurrió un error.'));
+        }
+    } catch (error) {
+        console.error('Error al actualizar el cliente:', error);
+        alert('Hubo un error al intentar actualizar el cliente.');
+    }
+});
+    
+// Evento para abrir el modal de agregar cliente
+
+
+   // Evento para abrir el modal de agregar cliente
+const btnAbrirModalCliente = document.getElementById('btnabrirmodalCliente');
+btnAbrirModalCliente.addEventListener('click', () => {
+    // Mostrar el modal
+    $('#addClienteModal').modal('show');
+});
+ 
+
+
+
+ gestion_clientes.addEventListener('click', async (b) => {
+        b.preventDefault();
+        consultaContainer.classList.add('hidden');
+        vehiculoContainer.classList.add('hidden');
+        stockContainer.classList.add('hidden');
+        crudContainer.classList.add('hidden');
+        crud_container_consulta_vehiculo.classList.add('hidden');
+        facturacionContainer.classList.add('hidden');
+        proveedoresContainer.classList.add('hidden');
+        containerClientes.classList.remove('hidden');
+        nav.classList.remove('visible');
     });
-    
 
-    
-
-
-
-
+   
 
 
 
@@ -2401,3 +2567,4 @@ $('#btnabrirmodalProveedor').on('click', function() {
 
 
 });
+
