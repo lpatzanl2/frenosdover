@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const consultaContainer = document.getElementById('consulta-container');
     
     const stockContainer = document.getElementById('stock_container');
+    const dashboardd = document.getElementById('dashboardd');
+    
     
     const vehiculoLink = document.getElementById('consulta-vehiculo');
     const vehiculoContainer = document.getElementById('vehiculo-container');
@@ -18,8 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const navGestionInvetario = document.getElementById('gestion-inventario');
     const GestionDetallePastilla = document.getElementById('Gestion-Detalle-Pastilla');
 
+
+    
+    
     const gestion_clientes = document.getElementById('gestion-clientes');
     const containerClientes = document.getElementById('containerClientes');
+    
+
+
 
 
     gestion_clientes.addEventListener('click', async (b) => {
@@ -31,9 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         crud_container_consulta_vehiculo.classList.add('hidden');
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
-        containerClientes.classList.add('hidden');
         containerClientes.classList.remove('hidden');
-        nav.classList.remove('visible');
+        dashboardd.classList.add('hidden');         
     });
 
     
@@ -58,37 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
  
    // ----------------- MANEJO DE LA NAV ---------------------------- 
   // Submenú toggle
-document.getElementById('gestiones-toggle').addEventListener('click', function(e) {
-    e.preventDefault(); // Evita el comportamiento predeterminado del enlace
-    const submenu = document.getElementById('submenu-gestiones');
-    submenu.classList.toggle('hidden'); // Alterna la clase hidden para mostrar/ocultar el submenú
-});
-
-// Mostrar nav al hacer clic en el botón de abrir
-abrir.addEventListener('click', () => {
-    const submenu = document.getElementById('submenu-gestiones');
-    submenu.classList.add('hidden'); // Asegura que el submenú esté oculto al abrir la nav
-    nav.classList.add('visible');
-});
-
-// Cerrar nav al hacer clic en el botón de cerrar
-cerrar.addEventListener('click', () => {
-    nav.classList.remove('visible');
-});
-
-// Cerrar nav al presionar la tecla ESC
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' || e.key === 'Esc') { // Comprueba si la tecla presionada es ESC
-        nav.classList.remove('visible');
-    }
-});
-
-// Cerrar nav al hacer clic fuera de la nav
-document.addEventListener('click', (e) => {
-    if (nav.classList.contains('visible') && !nav.contains(e.target) && !abrir.contains(e.target)) {
-        nav.classList.remove('visible');
-    }
-});
 
 
 
@@ -108,11 +84,11 @@ vehiculoLink.addEventListener('click', async (e) => {
     vehiculoContainer.classList.remove('hidden');
     stockContainer.classList.add('hidden');
     crudContainer.classList.add('hidden');
-    nav.classList.remove('visible');
     crud_container_consulta_vehiculo.classList.add('hidden');
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
     containerClientes.classList.add('hidden');
+    dashboardd.classList.add('hidden');
 });
 
 
@@ -275,10 +251,10 @@ async function buscarPastillaPastillita() {
         stockContainer.classList.add('hidden');
         crudContainer.classList.add('hidden');
         crud_container_consulta_vehiculo.classList.add('hidden');
-        nav.classList.remove('visible');
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
         containerClientes.classList.add('hidden');
+        dashboardd.classList.add('hidden');
     });
     
 
@@ -356,7 +332,7 @@ async function buscarPastillaPastillita() {
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
         containerClientes.classList.add('hidden');
-        nav.classList.remove('visible');
+        dashboardd.classList.add('hidden');
     });
 
 
@@ -474,7 +450,7 @@ navGestionInvetario.addEventListener('click', async (b) => {
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
     containerClientes.classList.add('hidden');
-    nav.classList.remove('visible');
+    dashboardd.classList.add('hidden');
 });
 
 //obtenemos lo que tiene el input en el area de gestion de inventario
@@ -954,11 +930,11 @@ GestionDetallePastilla.addEventListener('click', async (e) => {
     vehiculoContainer.classList.add('hidden');
     stockContainer.classList.add('hidden');
     crudContainer.classList.add('hidden');
-    nav.classList.remove('visible');
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.add('hidden');
     crud_container_consulta_vehiculo.classList.remove('hidden');
     containerClientes.classList.add('hidden');
+    dashboardd.classList.add('hidden');
 });
 
 
@@ -1769,11 +1745,26 @@ navFacturas.addEventListener('click', async (b) => {
     facturacionContainer.classList.remove('hidden');
     proveedoresContainer.classList.add('hidden');
     containerClientes.classList.add('hidden');
+    dashboardd.classList.add('hidden');
 
-    nav.classList.remove('visible');
 });
 
 //imprimir el div que representa el cuerpo de la factura
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Función para imprimir la factura
@@ -1833,10 +1824,10 @@ function imprimirFactura() {
             <p><strong>Dirección:</strong> ${direccionInput}</p>
             <p><strong>Teléfono:</strong> ${telefonoInput}</p>
             <p><strong>Fecha:</strong> ${fechaFactura}</p>
-            <h3 class="text-success"><strong>Total: Q${total}</strong></h3> <!-- Agregando el total -->
+            <h3 class="text-success"><strong>Total: Q${total}</strong></h3>
         </div>
         <hr />
-        ${productosHTML} <!-- Insertando la tabla de productos -->
+        ${productosHTML}
         <div class="footer text-center">
             <p class="font-italic">Gracias por su compra!</p>
         </div>
@@ -1852,23 +1843,28 @@ function imprimirFactura() {
                         font-family: Arial, sans-serif;
                         margin: 20px;
                         padding: 0;
-                        background-color: #f8f9fa;
+                        background-color: #f0f4f8;
                     }
                     .invoice-header {
                         border: 2px solid #007bff;
                         padding: 20px;
                         border-radius: 10px;
-                        background-color: #e9ecef;
+                        background-color: #e3f2fd;
                     }
                     h1 {
                         text-align: center;
-                        color: #007bff; /* Color del título */
-                        font-size: 32px;
-                        margin-bottom: 15px;
+                        color: #007bff;
+                        font-size: 36px;
+                        margin-bottom: 10px;
+                        padding: 15px;
+                        background-color: rgba(0, 123, 255, 0.1);
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     }
                     p {
                         font-size: 16px;
                         margin: 5px 0;
+                        color: #333;
                     }
                     hr {
                         margin: 20px 0;
@@ -1878,6 +1874,7 @@ function imprimirFactura() {
                         width: 100%;
                         border-collapse: collapse;
                         margin-top: 20px;
+                        background-color: #fff;
                     }
                     th {
                         background-color: #007bff;
@@ -1901,7 +1898,8 @@ function imprimirFactura() {
                     }
                     .text-success {
                         color: #28a745;
-                        font-size: 24px;
+                        font-size: 28px;
+                        font-weight: bold;
                     }
                     .container {
                         background-color: white;
@@ -1929,6 +1927,8 @@ const btnImprimirFactura = document.getElementById('btnImprimirFactura');
 if (btnImprimirFactura) {
     btnImprimirFactura.addEventListener('click', imprimirFactura);
 }
+
+
 
 
 
@@ -2277,7 +2277,7 @@ navGestionProveedores.addEventListener('click', async (b) => {
     facturacionContainer.classList.add('hidden');
     proveedoresContainer.classList.remove('hidden');
     containerClientes.classList.add('hidden');
-    nav.classList.remove('visible');
+    dashboardd.classList.add('hidden');
 });
 
 // Seleccionar el botón "Nueva Factura"
@@ -2549,10 +2549,36 @@ btnAbrirModalCliente.addEventListener('click', () => {
         facturacionContainer.classList.add('hidden');
         proveedoresContainer.classList.add('hidden');
         containerClientes.classList.remove('hidden');
-        nav.classList.remove('visible');
+        dashboardd.classList.add('hidden');
     });
 
+    
    
+//Home Simulation
+// Selecciona todos los íconos con la clase 'home-icon'
+const homeIcons = document.querySelectorAll('.home-icon');
+
+// Itera sobre todos los íconos y asigna un event listener
+homeIcons.forEach(icon => {
+    icon.addEventListener('click', function() {
+        // Llama a una función específica según el ID del ícono
+        ocultarTodosLosDiv(icon.id);
+    });
+});
+
+function ocultarTodosLosDiv() {
+        consultaContainer.classList.add('hidden');
+        vehiculoContainer.classList.add('hidden');
+        stockContainer.classList.add('hidden');
+        crudContainer.classList.add('hidden');
+        crud_container_consulta_vehiculo.classList.add('hidden');
+        facturacionContainer.classList.add('hidden');
+        proveedoresContainer.classList.add('hidden');
+        containerClientes.classList.add('hidden');
+        dashboardd.classList.remove('hidden');
+
+    // Lógica adicional basada en el ID del ícono
+}
 
 
 
