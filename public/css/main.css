@@ -430,6 +430,8 @@ table.table .avatar {
     width: 100%; /* Ancho completo del contenedor */
 }
 
+
+
 #customBackgroundDiv {
     background-color: #f8e8d5 ; /* Color de fondo deseado */
     padding: 15px; /* Añadir un poco de padding para espaciar el contenido */
@@ -962,11 +964,20 @@ body {
 /* Estilo para el ícono de la casa */
 .home-icon {
     position: absolute;
-    right: 20px; /* Pone el ícono a la derecha */
+    right: 2vw; /* Pone el ícono a la derecha */
     color: #ffffff;
     font-size: 2rem;
     transition: color 0.3s ease;
 }
+.profile-icon {
+    position: absolute;
+    right: 10vw; /* Pone el ícono a la derecha */
+    color: #ffffff;
+    font-size: 2rem;
+    transition: color 0.3s ease;
+}
+
+
 
 .home-icon:hover {
     color: #FEBF00; /* Color dorado al pasar el ratón */
