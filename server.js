@@ -8,12 +8,23 @@ const app = express();
 const port = 3000;
 
 // Configura la conexión a la base de datos
-const client = new Client({
+/*const client = new Client({
     user: 'frenosdoveradmin',
     host: 'dpg-crfgalogph6c73881jm0-a.frankfurt-postgres.render.com',
     database: 'frenosdoverdb',
     password: 'UrrfE8fNkWyCo7kI3jIlwroa4JhEiPCs',
     port: 5432,
+    ssl: {
+      rejectUnauthorized: false,
+    }
+});*/
+
+const client = new Client({
+    user: 'avnadmin',
+    host: 'doverdb-doverproject.f.aivencloud.com',
+    database: 'frenosdoverdb',
+    password: 'AVNS_zQbrO7RSpCenl1fTdTg',
+    port: 27696,
     ssl: {
       rejectUnauthorized: false,
     }
